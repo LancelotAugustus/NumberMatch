@@ -127,10 +127,10 @@ class Board:
         Returns:
             is_matching: 如果能够配对消除则返回True，否则返回False
         """
-        digit1 = self.get_digit_by_index(global_index1)
-        digit2 = self.get_digit_by_index(global_index2)
-        row_index1, col_index1 = self.calc_coord(digit1)
-        row_index2, col_index2 = self.calc_coord(digit2)
+        row_index1, col_index1 = self.calc_coord(global_index1)
+        row_index2, col_index2 = self.calc_coord(global_index2)
+        digit1 = self.get_digit_by_coord(row_index1, col_index1)
+        digit2 = self.get_digit_by_coord(row_index2, col_index2)
 
         if global_index1 == global_index2:
             return False
@@ -230,7 +230,7 @@ class Board:
         """
         digit_list = []
         for row in self.grid:
-            for digit in self.grid[row]:
+            for digit in row:
                 digit_list.append(digit)
 
         new_board = Board()
