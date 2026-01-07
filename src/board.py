@@ -133,14 +133,14 @@ class Board:
             # 相同行
             if row_index1 == row_index2:
                 for col_index in range(min(col_index1, col_index2) + 1, max(col_index1, col_index2)):
-                    if self.get_digit_by_coord(row_index1, col_index) != 0:
+                    if self.get_digit_by_coord(row_index1, col_index):
                         return False
                 return True
 
             # 相同列
             elif col_index1 == col_index2:
                 for row_index in range(min(row_index1, row_index2) + 1, max(row_index1, row_index2)):
-                    if self.get_digit_by_coord(row_index, col_index1) != 0:
+                    if self.get_digit_by_coord(row_index, col_index1):
                         return False
                 return True
 
@@ -149,18 +149,16 @@ class Board:
                   row_index1 - row_index2 == col_index1 - col_index2):
                 row_step = 1 if row_index2 > row_index1 else -1
                 col_step = 1 if col_index2 > col_index1 else -1
-                row_index, col_index = row_index1 + row_step, col_index1 + col_step
-                while row_index != row_index2 and col_index != col_index2:
-                    if self.get_digit_by_coord(row_index, col_index) != 0:
+                for row, col in zip(range(row_index1 + row_step, row_index2, row_step),
+                                    range(col_index1 + col_step, col_index2, col_step)):
+                    if self.get_digit_by_coord(row, col) != 0:
                         return False
-                    row_index += row_step
-                    col_index += col_step
                 return True
 
             # 跨行首尾
             elif abs(row_index1 - row_index2) == 1:
                 for global_index in range(min(global_index1, global_index2) + 1, max(global_index1, global_index2)):
-                    if self.get_digit_by_index(global_index) != 0:
+                    if self.get_digit_by_index(global_index):
                         return False
                 return True
 
