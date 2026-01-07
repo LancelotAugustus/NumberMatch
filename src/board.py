@@ -63,6 +63,7 @@ class Board:
         Args:
             size: 棋盘尺寸
         """
+        self.size = size
         digit_list = [randint(0, 9) for _ in range(size)]
         self.set_grid(digit_list)
 
