@@ -16,14 +16,10 @@ class Board:
 
     def __str__(self):
         """可视化棋盘"""
-        result = []
-        for i in range(len(self.grid)):
-            row_str = []
-            for j in range(len(self.grid[i])):
-                digit = self.grid[i][j]
-                row_str.append(str(digit) if digit != 0 else ".")
-            result.append(" ".join(row_str))
-        return "\n".join(result)
+        return "\n".join(
+            " ".join(str(digit) if digit != 0 else "." for digit in row)
+            for row in self.grid
+        )
 
     @staticmethod
     def calc_coord(global_index: int) -> Tuple[int, int]:
@@ -49,12 +45,7 @@ class Board:
             digit_list: 表示局面的整数列表，使用0表示空格
         """
         self.size = len(digit_list)
-        for i in range(self.size):
-            if i % 9 == 0:
-                self.grid.append([])
-                self.grid[-1].append(digit_list[i])
-            else:
-                self.grid[-1].append(digit_list[i])
+        self.grid = [digit_list[i: i + 9] for i in range(0, self.size, 9)]
 
     def generate_grid(self, size: int) -> None:
         """
@@ -63,7 +54,6 @@ class Board:
         Args:
             size: 棋盘尺寸
         """
-        self.size = size
         digit_list = [randint(0, 9) for _ in range(size)]
         self.set_grid(digit_list)
 
@@ -229,20 +219,16 @@ class Board:
         Returns:
             new_board: Board实例
         """
-        digit_list = []
-        for row in self.grid:
-            for digit in row:
-                digit_list.append(digit)
-
         new_board = Board()
-        new_board.set_grid(digit_list)
+        new_board.grid = [row[:] for row in self.grid]
+        new_board.size = self.size
         return new_board
 
     def clear(self) -> None:
         """棋盘操作（被动） —— 清理空行"""
         new_board = []
         for row in self.grid:
-            if sum(row) != 0:
+            if any(row):
                 new_board.append(row)
             else:
                 self.size -= len(row)
@@ -250,18 +236,14 @@ class Board:
 
     def fill(self) -> None:
         """棋盘操作（主动） —— 拷贝填充"""
-        replica = self.get_remaining_digits()
-        self.size += len(replica)
-        filled_digits = [replica[i] for i in range(9 - len(self.grid[-1]))]
-        added_digits = [replica[i] for i in range(9 - len(self.grid[-1]), len(replica))]
-        for digit in filled_digits:
-            self.grid[-1].append(digit)
-        for i in range(len(added_digits)):
-            if i % 9 == 0:
-                self.grid.append([])
-                self.grid[-1].append(added_digits[i])
-            else:
-                self.grid[-1].append(added_digits[i])
+        remaining_digits = [digit for i in range(self.size) if (digit := self.get_digit_by_index(i))]
+        self.size += len(remaining_digits)
+
+        split_index = 9 - len(self.grid[-1])
+        self.grid[-1] += remaining_digits[: split_index]
+
+        digit_list = remaining_digits[split_index:]
+        self.grid += [digit_list[i: i + 9] for i in range(0, len(digit_list), 9)]
 
     def match(self, global_index1: int, global_index2: int) -> None:
         """棋盘操作（主动） —— 配对消除"""
