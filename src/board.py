@@ -16,10 +16,7 @@ class Board:
 
     def __str__(self):
         """可视化棋盘"""
-        return "\n".join(
-            " ".join(str(digit) if digit != 0 else "." for digit in row)
-            for row in self.grid
-        )
+        return "\n".join(" ".join(str(digit) if digit != 0 else "." for digit in row) for row in self.grid)
 
     @staticmethod
     def calc_coord(global_index: int) -> Tuple[int, int]:
@@ -164,53 +161,6 @@ class Board:
                 return True
 
         return False
-
-    def find_digit_pair(self) -> list[tuple[int, int]]:
-        """
-        寻找合规数字对
-
-        Returns:
-            digit_pair_list: 合规数字对列表
-        """
-        result = []
-        for i in range(self.size):
-            for j in range(i + 1, self.size):
-                if self.is_matching(i, j):
-                    result.append((i, j))
-        return result
-
-    def get_remaining_digits(self) -> list[int]:
-        """
-        获取剩余数字列表
-
-        Returns:
-            remaining_digits: 剩余数字列表
-        """
-        remaining_digits = []
-        for i in range(self.size):
-            if digit := self.get_digit_by_index(i):
-                remaining_digits.append(digit)
-        return remaining_digits
-
-    def get_remaining_digits_num(self) -> int:
-        """
-        获取剩余数字数量
-
-        Returns:
-            remaining_digits: 剩余数字数量
-        """
-        remaining_digits_num = len(self.get_remaining_digits())
-        return remaining_digits_num
-
-    def get_remaining_rows_num(self) -> int:
-        """
-        获取剩余有效行数量
-
-        Returns:
-            remaining_digits: 剩余有效行数量
-        """
-        remaining_rows_num = len(self.grid)
-        return remaining_rows_num
 
     def safe_copy(self) -> 'Board':
         """
