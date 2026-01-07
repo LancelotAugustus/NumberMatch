@@ -32,7 +32,7 @@ class Board:
         return row_index, col_index
 
     def sync_data(self) -> None:
-        """更新成员变量"""
+        """同步数据"""
         self.digit_count = len(self.digit_list)
         self.digit_grid = [self.digit_list[i: i + 9] for i in range(0, self.digit_count, 9)]
 
@@ -83,7 +83,7 @@ class Board:
 
     def set_digit_by_coord(self, row_index: int, col_index: int, digit: int) -> None:
         """
-        在指定位置放置数字
+        按坐标放置数字
 
         Args:
             row_index: 行索引（0-based）
@@ -96,7 +96,7 @@ class Board:
 
     def set_digit_by_index(self, global_index: int, digit: int) -> None:
         """
-        在指定位置放置数字
+        按索引放置数字
 
         Args:
             global_index: 全局索引（0-based）
@@ -108,7 +108,7 @@ class Board:
 
     def is_matching(self, global_index1: int, global_index2: int) -> bool:
         """
-        是否能够配对消除
+        是否配对
 
         Args:
             global_index1: 全局索引（0-based）
@@ -166,7 +166,7 @@ class Board:
 
     def safe_copy(self) -> 'Board':
         """
-        创建当前棋盘的深拷贝
+        创建拷贝
 
         Returns:
             new_board: Board实例
