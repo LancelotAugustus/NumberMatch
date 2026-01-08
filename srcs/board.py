@@ -13,6 +13,17 @@ class Board:
         digit_grid = [self.digit_list[i: i + 9] for i in range(0, len(self.digit_list), 9)]
         return "\n".join(" ".join(str(digit) if digit != 0 else "." for digit in row) for row in digit_grid)
 
+    def safe_copy(self) -> 'Board':
+        """
+        安全拷贝
+
+        Returns:
+            new_board: Board实例
+        """
+        new_board = Board()
+        new_board.digit_list = self.digit_list[:]
+        return new_board
+
     def set_board(self, digit_list: list[int]) -> None:
         """
         设置局面
@@ -31,7 +42,12 @@ class Board:
         """
         self.digit_list = [randint(1, 9) for _ in range(size)]
 
-    def is_matching(self, global_index1: int, global_index2: int) -> bool:
+    @staticmethod
+    def _can_match(digit1: int, digit2: int) -> bool:
+        """是否可以配对"""
+        return digit1 == digit2 or digit1 + digit2 == 10
+
+    def _is_matching(self, global_index1: int, global_index2: int) -> bool:
         """
         是否配对
 
@@ -51,7 +67,7 @@ class Board:
         if digit1 == 0 or digit2 == 0:
             return False
 
-        if digit1 != digit2 and digit1 + digit2 != 10:
+        if not self._can_match(digit1, digit2):
             return False
 
         row_index1 = global_index1 // 9
@@ -95,18 +111,7 @@ class Board:
         else:
             return False
 
-    def safe_copy(self) -> 'Board':
-        """
-        安全拷贝
-
-        Returns:
-            new_board: Board实例
-        """
-        new_board = Board()
-        new_board.digit_list = self.digit_list[:]
-        return new_board
-
-    def clear(self) -> None:
+    def _clear(self) -> None:
         """清理空行"""
         digit_grid = [self.digit_list[i: i + 9] for i in range(0, len(self.digit_list), 9)]
         self.digit_list = [digit for row in digit_grid if any(row) for digit in row]
@@ -124,7 +129,7 @@ class Board:
             global_index1: 全局索引（0-based）
             global_index2: 全局索引（0-based）
         """
-        if self.is_matching(global_index1, global_index2):
+        if self._is_matching(global_index1, global_index2):
             self.digit_list[global_index1] = 0
             self.digit_list[global_index2] = 0
-            self.clear()
+            self._clear()

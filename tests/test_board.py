@@ -86,10 +86,10 @@ class TestBoardSetup:
         board = Board()
         board.generate_board(9)
         first_result = board.digit_list[:]
-        
+
         board.generate_board(9)
         second_result = board.digit_list[:]
-        
+
         # 两次生成的结果可能不同（随机性），但结构应该一致
         assert len(first_result) == len(second_result) == 9
         assert all(1 <= d <= 9 for d in first_result)
@@ -111,7 +111,7 @@ class TestSameRowMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 8) is True
+        assert board._is_matching(0, 8) is True
 
     def test_same_row_match_blocked(self):
         """测试同行有阻挡时匹配失败"""
@@ -125,7 +125,7 @@ class TestSameRowMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 8) is False
+        assert board._is_matching(0, 8) is False
 
     def test_same_row_adjacent_match(self):
         """测试同行相邻数字匹配"""
@@ -139,7 +139,7 @@ class TestSameRowMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 1) is True
+        assert board._is_matching(0, 1) is True
 
 
 class TestSameColumnMatching:
@@ -157,7 +157,7 @@ class TestSameColumnMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          1, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 72) is True
+        assert board._is_matching(0, 72) is True
 
     def test_same_column_match_blocked(self):
         """测试同列有阻挡时匹配失败"""
@@ -172,7 +172,7 @@ class TestSameColumnMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          1, 0, 0, 0, 0, 0, 0, 0, 0])
         board.digit_list[45] = 2  # 在第5行第0列放置阻挡
-        assert board.is_matching(0, 72) is False
+        assert board._is_matching(0, 72) is False
 
     def test_same_column_adjacent_match(self):
         """测试同列相邻数字匹配"""
@@ -186,7 +186,7 @@ class TestSameColumnMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 9) is True
+        assert board._is_matching(0, 9) is True
 
 
 class TestDiagonalMatching:
@@ -204,7 +204,7 @@ class TestDiagonalMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 20) is True
+        assert board._is_matching(0, 20) is True
 
     def test_anti_diagonal_match_success(self):
         """测试反对角线匹配成功"""
@@ -218,7 +218,7 @@ class TestDiagonalMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(8, 16) is True
+        assert board._is_matching(8, 16) is True
 
     def test_diagonal_match_blocked(self):
         """测试对角线有阻挡时匹配失败"""
@@ -232,7 +232,7 @@ class TestDiagonalMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 20) is False
+        assert board._is_matching(0, 20) is False
 
 
 class TestCrossRowMatching:
@@ -250,7 +250,7 @@ class TestCrossRowMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 17) is True
+        assert board._is_matching(0, 17) is True
 
     def test_cross_row_match_blocked(self):
         """测试跨行首尾有阻挡时匹配失败"""
@@ -264,7 +264,7 @@ class TestCrossRowMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 17) is False
+        assert board._is_matching(0, 17) is False
 
     def test_cross_row_non_adjacent_no_match(self):
         """测试跨行非相邻行不能匹配"""
@@ -278,7 +278,7 @@ class TestCrossRowMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 1])
-        assert board.is_matching(0, 8) is False  # 第0行第0列和第0行第8列，相同行但被阻挡
+        assert board._is_matching(0, 8) is False  # 第0行第0列和第0行第8列，相同行但被阻挡
 
 
 class TestSumToTenMatching:
@@ -296,7 +296,7 @@ class TestSumToTenMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 8) is True
+        assert board._is_matching(0, 8) is True
 
     def test_sum_to_ten_same_column(self):
         """测试同列和为10的匹配"""
@@ -310,7 +310,7 @@ class TestSumToTenMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          4, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 72) is True
+        assert board._is_matching(0, 72) is True
 
     def test_sum_to_ten_diagonal(self):
         """测试对角线和为10的匹配"""
@@ -324,7 +324,7 @@ class TestSumToTenMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 8])
-        assert board.is_matching(0, 80) is True
+        assert board._is_matching(0, 80) is True
 
     def test_sum_not_ten_no_match(self):
         """测试和不为10时不能匹配"""
@@ -338,7 +338,7 @@ class TestSumToTenMatching:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 8) is False  # 3+6=9 ≠ 10
+        assert board._is_matching(0, 8) is False  # 3+6=9 ≠ 10
 
 
 class TestNonMatchingCases:
@@ -356,7 +356,7 @@ class TestNonMatchingCases:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 0) is False
+        assert board._is_matching(0, 0) is False
 
     def test_zero_digit_no_match(self):
         """测试包含零值不能匹配"""
@@ -370,8 +370,8 @@ class TestNonMatchingCases:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 1) is False  # 1和0，不能匹配
-        assert board.is_matching(1, 8) is False  # 0和1，不能匹配
+        assert board._is_matching(0, 1) is False  # 1和0，不能匹配
+        assert board._is_matching(1, 8) is False  # 0和1，不能匹配
 
     def test_different_numbers_no_match(self):
         """测试不同数字且和不等于10时不能匹配"""
@@ -385,7 +385,7 @@ class TestNonMatchingCases:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board.is_matching(0, 8) is False  # 1和3，既不相同，和也不为10
+        assert board._is_matching(0, 8) is False  # 1和3，既不相同，和也不为10
 
     def test_blocked_path_no_match(self):
         """测试路径被阻挡时不能匹配"""
@@ -401,7 +401,7 @@ class TestNonMatchingCases:
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
         # 虽然1和1相同，但路径被阻挡（在索引1,2,3,4,5,6,7处有阻挡）
         board.digit_list[3] = 2  # 在中间添加阻挡
-        assert board.is_matching(0, 8) is False
+        assert board._is_matching(0, 8) is False
 
 
 class TestClearAndFill:
@@ -419,14 +419,14 @@ class TestClearAndFill:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        
+
         original_length = len(board.digit_list)
-        board.clear()
-        
+        board._clear()
+
         # 验证空行被移除
         assert len(board.digit_list) < original_length
         assert len(board.digit_list) == 18  # 2行，每行9个元素
-        
+
         # 验证所有剩余元素都是非零的
         assert all(d != 0 for d in board.digit_list)
 
@@ -435,10 +435,10 @@ class TestClearAndFill:
         board = Board()
         board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9,
                          1, 2, 3, 4, 5, 6, 7, 8, 9])
-        
+
         original_length = len(board.digit_list)
-        board.clear()
-        
+        board._clear()
+
         # 验证长度不变
         assert len(board.digit_list) == original_length
         assert len(board.digit_list) == 18
@@ -448,9 +448,9 @@ class TestClearAndFill:
         board = Board()
         board.set_board([0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        
-        board.clear()
-        
+
+        board._clear()
+
         # 验证全部移除
         assert len(board.digit_list) == 0
 
@@ -460,15 +460,15 @@ class TestClearAndFill:
         board.set_board([1, 0, 3, 0, 5, 0, 7, 0, 9,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          1, 2, 3, 4, 5, 6, 7, 8, 9])
-        
+
         original_length = len(board.digit_list)
         original_nonzero = [d for d in board.digit_list if d != 0]
-        
+
         board.fill()
-        
+
         # 验证长度增加
         assert len(board.digit_list) == original_length + len(original_nonzero)
-        
+
         # 验证末尾包含所有原始非零数字
         assert board.digit_list[-len(original_nonzero):] == original_nonzero
 
@@ -476,10 +476,10 @@ class TestClearAndFill:
         """测试 fill() 处理无零值的情况"""
         board = Board()
         board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
-        
+
         original_length = len(board.digit_list)
         board.fill()
-        
+
         # 验证长度不变
         assert len(board.digit_list) == original_length * 2
         assert board.digit_list == [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -488,10 +488,10 @@ class TestClearAndFill:
         """测试 fill() 处理全零值的情况"""
         board = Board()
         board.set_board([0, 0, 0, 0, 0, 0, 0, 0, 0])
-        
+
         original_length = len(board.digit_list)
         board.fill()
-        
+
         # 验证长度不变（全零）
         assert len(board.digit_list) == original_length
 
@@ -533,10 +533,10 @@ class TestMatchOperation:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        
+
         original_digit_list = board.digit_list[:]
         board.match(0, 8)  # 1+3=4，不能匹配
-        
+
         # 验证数据未改变
         assert board.digit_list == original_digit_list
 
@@ -552,9 +552,9 @@ class TestMatchOperation:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        
+
         board.match(0, 8)  # 5和5相同，匹配
-        
+
         # 验证空行被清除（第一行被移除）
         digit_grid = [board.digit_list[i: i + 9] for i in range(0, len(board.digit_list), 9)]
         assert len(digit_grid) == 0  # 第一行被完全移除
@@ -575,12 +575,12 @@ class TestSafeCopy:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-        
+
         board_copy = board.safe_copy()
-        
+
         # 验证内容相同
         assert board_copy.digit_list == board.digit_list
-        
+
         # 验证是独立副本
         board.digit_list[0] = 99
         assert board_copy.digit_list[0] == 1
@@ -590,7 +590,7 @@ class TestSafeCopy:
         """测试空棋盘的 safe_copy()"""
         board = Board()
         board_copy = board.safe_copy()
-        
+
         assert board_copy.digit_list == []
         assert board_copy is not board
 
@@ -598,9 +598,9 @@ class TestSafeCopy:
         """测试 safe_copy() 返回正确类型"""
         board = Board()
         board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
-        
+
         board_copy = board.safe_copy()
-        
+
         assert isinstance(board_copy, Board)
         assert type(board_copy) == Board
 
@@ -611,14 +611,14 @@ class TestEdgeCases:
     def test_empty_board_operations(self):
         """测试空棋盘操作"""
         board = Board()
-        
+
         # 测试空棋盘的字符串表示
         assert str(board) == ""
-        
+
         # 测试 clear() 在空棋盘上
-        board.clear()
+        board._clear()
         assert board.digit_list == []
-        
+
         # 测试 fill() 在空棋盘上
         board.fill()
         assert board.digit_list == []
@@ -627,7 +627,7 @@ class TestEdgeCases:
         """测试单元素棋盘"""
         board = Board()
         board.set_board([5])
-        
+
         assert len(board.digit_list) == 1
         assert board.digit_list[0] == 5
         assert "5" in str(board)
@@ -636,12 +636,12 @@ class TestEdgeCases:
         """测试边界索引"""
         board = Board()
         board.set_board([1] * 81)  # 完整棋盘
-        
+
         # 测试四角
-        assert board.is_matching(0, 8) is False   # 左上角同行
-        assert board.is_matching(0, 72) is False  # 左上角到左下角
-        assert board.is_matching(8, 80) is False  # 右上角到右下角
-        assert board.is_matching(72, 80) is False # 左下角到右下角
+        assert board._is_matching(0, 8) is False  # 左上角同行
+        assert board._is_matching(0, 72) is False  # 左上角到左下角
+        assert board._is_matching(8, 80) is False  # 右上角到右下角
+        assert board._is_matching(72, 80) is False  # 左下角到右下角
 
     def test_out_of_range_indices(self):
         """测试越界索引"""
@@ -649,9 +649,9 @@ class TestEdgeCases:
         board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         with pytest.raises(IndexError):
-            board.is_matching(0, 9)  # 第二个索引越界
+            board._is_matching(0, 9)  # 第二个索引越界
         with pytest.raises(IndexError):
-            board.is_matching(9, 0)  # 第一个索引越界
+            board._is_matching(9, 0)  # 第一个索引越界
         # 注意：Python列表支持负索引，不会抛出IndexError
 
     def test_mixed_match_scenarios(self):
@@ -665,15 +665,15 @@ class TestEdgeCases:
                          0, 0, 0, 0, 0, 0, 0, 0, 0,  # 空行
                          0, 0, 0, 0, 0, 0, 0, 0, 0,  # 空行
                          0, 0, 0, 0, 0, 0, 0, 0, 0,  # 空行
-                         0, 0, 0, 0, 0, 0, 0, 0, 0]) # 空行
-        
+                         0, 0, 0, 0, 0, 0, 0, 0, 0])  # 空行
+
         # 验证匹配成功
-        assert board.is_matching(0, 2) is True  # 1和9，和为10
-        assert board.is_matching(0, 1) is False # 1和0，不能匹配
-        
+        assert board._is_matching(0, 2) is True  # 1和9，和为10
+        assert board._is_matching(0, 1) is False  # 1和0，不能匹配
+
         # 执行匹配
         board.match(0, 2)
-        
+
         # 验证空行被清除（第一行变成全零被清除，6个空行也被清除）
         digit_grid = [board.digit_list[i: i + 9] for i in range(0, len(board.digit_list), 9)]
         # 只剩下第二行和第三行
