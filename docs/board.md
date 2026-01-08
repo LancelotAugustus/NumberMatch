@@ -69,6 +69,32 @@ print(board)
 
 ---
 
+### `safe_copy`
+
+```python
+def safe_copy(self) -> 'Board'
+```
+
+**功能描述：** 创建当前棋盘的安全副本。返回一个新的 `Board` 实例，其 `digit_list` 是原列表的浅拷贝，修改新实例不会影响原实例。
+
+**参数：** 无
+
+**返回值：** `Board` - 新的 Board 实例，包含与原实例相同的数据
+
+**使用示例：**
+
+```python
+board1 = Board()
+board1.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
+board2 = board1.safe_copy()
+
+board2.digit_list[0] = 0
+print(board1.digit_list[0])  # 1，未受影响
+print(board2.digit_list[0])  # 0
+```
+
+---
+
 ### `set_board`
 
 ```python
@@ -223,37 +249,6 @@ print(board._is_matching(0, 1))  # False
 
 ---
 
-### `match`
-
-```python
-def match(self, global_index1: int, global_index2: int) -> None
-```
-
-**功能描述：** 执行配对消除操作。首先调用 `_is_matching()` 判断两个位置是否满足配对条件，如果可以配对，则将两个位置的数字设为
-0（表示消除），然后调用 `_clear()` 清理空行。
-
-**参数：**
-
-| 参数名             | 类型    | 说明                  |
-|-----------------|-------|---------------------|
-| `global_index1` | `int` | 第一个位置的全局索引（0-based） |
-| `global_index2` | `int` | 第二个位置的全局索引（0-based） |
-
-**返回值：** `None`
-
-**使用示例：**
-
-```python
-board = Board()
-board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
-
-# 1 和 9 和为 10，可以配对
-board.match(0, 8)
-print(board.digit_list)  # [0, 2, 3, 4, 5, 6, 7, 8, 0]
-```
-
----
-
 ### `clear`
 
 ```python
@@ -303,28 +298,33 @@ board.fill()  # 填充后 digit_list 为 [1, 2, 0, 3, 0, 1, 2, 3]
 
 ---
 
-### `safe_copy`
+### `match`
 
 ```python
-def safe_copy(self) -> 'Board'
+def match(self, global_index1: int, global_index2: int) -> None
 ```
 
-**功能描述：** 创建当前棋盘的安全副本。返回一个新的 `Board` 实例，其 `digit_list` 是原列表的浅拷贝，修改新实例不会影响原实例。
+**功能描述：** 执行配对消除操作。首先调用 `_is_matching()` 判断两个位置是否满足配对条件，如果可以配对，则将两个位置的数字设为
+0（表示消除），然后调用 `_clear()` 清理空行。
 
-**参数：** 无
+**参数：**
 
-**返回值：** `Board` - 新的 Board 实例，包含与原实例相同的数据
+| 参数名             | 类型    | 说明                  |
+|-----------------|-------|---------------------|
+| `global_index1` | `int` | 第一个位置的全局索引（0-based） |
+| `global_index2` | `int` | 第二个位置的全局索引（0-based） |
+
+**返回值：** `None`
 
 **使用示例：**
 
 ```python
-board1 = Board()
-board1.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
-board2 = board1.safe_copy()
+board = Board()
+board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
 
-board2.digit_list[0] = 0
-print(board1.digit_list[0])  # 1，未受影响
-print(board2.digit_list[0])  # 0
+# 1 和 9 和为 10，可以配对
+board.match(0, 8)
+print(board.digit_list)  # [0, 2, 3, 4, 5, 6, 7, 8, 0]
 ```
 
 ---
