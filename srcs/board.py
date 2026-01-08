@@ -51,45 +51,49 @@ class Board:
         if digit1 == 0 or digit2 == 0:
             return False
 
+        if digit1 != digit2 and digit1 + digit2 != 10:
+            return False
+
         row_index1 = global_index1 // 9
         row_index2 = global_index2 // 9
         col_index1 = global_index1 % 9
         col_index2 = global_index2 % 9
 
-        if digit1 == digit2 or digit1 + digit2 == 10:
-            # 相同行
-            if row_index1 == row_index2:
-                for col_index in range(min(col_index1, col_index2) + 1, max(col_index1, col_index2)):
-                    if self.digit_list[9 * row_index1 + col_index]:
-                        return False
-                return True
+        # 相同行
+        if row_index1 == row_index2:
+            for col_index in range(min(col_index1, col_index2) + 1, max(col_index1, col_index2)):
+                if self.digit_list[9 * row_index1 + col_index]:
+                    return False
+            return True
 
-            # 相同列
-            elif col_index1 == col_index2:
-                for row_index in range(min(row_index1, row_index2) + 1, max(row_index1, row_index2)):
-                    if self.digit_list[9 * row_index + col_index1]:
-                        return False
-                return True
+        # 相同列
+        elif col_index1 == col_index2:
+            for row_index in range(min(row_index1, row_index2) + 1, max(row_index1, row_index2)):
+                if self.digit_list[9 * row_index + col_index1]:
+                    return False
+            return True
 
-            # 对角线
-            elif (row_index1 + col_index1 == row_index2 + col_index2 or
-                  row_index1 - row_index2 == col_index1 - col_index2):
-                row_step = 1 if row_index2 > row_index1 else -1
-                col_step = 1 if col_index2 > col_index1 else -1
-                for row_index, col_index in zip(range(row_index1 + row_step, row_index2, row_step),
-                                                range(col_index1 + col_step, col_index2, col_step)):
-                    if self.digit_list[9 * row_index + col_index]:
-                        return False
-                return True
+        # 对角线
+        elif (row_index1 + col_index1 == row_index2 + col_index2 or
+              row_index1 - row_index2 == col_index1 - col_index2):
+            row_step = 1 if row_index2 > row_index1 else -1
+            col_step = 1 if col_index2 > col_index1 else -1
+            for row_index, col_index in zip(range(row_index1 + row_step, row_index2, row_step),
+                                            range(col_index1 + col_step, col_index2, col_step)):
+                if self.digit_list[9 * row_index + col_index]:
+                    return False
+            return True
 
-            # 跨行首尾
-            elif abs(row_index1 - row_index2) == 1:
-                for global_index in range(min(global_index1, global_index2) + 1, max(global_index1, global_index2)):
-                    if self.digit_list[global_index]:
-                        return False
-                return True
+        # 跨行首尾
+        elif abs(row_index1 - row_index2) == 1:
+            for global_index in range(min(global_index1, global_index2) + 1, max(global_index1, global_index2)):
+                if self.digit_list[global_index]:
+                    return False
+            return True
 
-        return False
+        # 不相关
+        else:
+            return False
 
     def safe_copy(self) -> 'Board':
         """
@@ -113,7 +117,13 @@ class Board:
         self.digit_list += remaining_digits
 
     def match(self, global_index1: int, global_index2: int) -> None:
-        """配对消除"""
+        """
+        配对消除
+
+        Args:
+            global_index1: 全局索引（0-based）
+            global_index2: 全局索引（0-based）
+        """
         if self.is_matching(global_index1, global_index2):
             self.digit_list[global_index1] = 0
             self.digit_list[global_index2] = 0
