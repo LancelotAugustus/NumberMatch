@@ -7,7 +7,6 @@ class Board:
 
     def __init__(self):
         """初始化棋盘"""
-        self.digit_count = 0
         self.digit_list = []
         self.digit_grid = []
 
@@ -33,10 +32,9 @@ class Board:
 
     def sync_data(self) -> None:
         """同步数据"""
-        self.digit_count = len(self.digit_list)
-        self.digit_grid = [self.digit_list[i: i + 9] for i in range(0, self.digit_count, 9)]
+        self.digit_grid = [self.digit_list[i: i + 9] for i in range(0, len(self.digit_list), 9)]
 
-    def set_digits(self, digit_list: list[int]) -> None:
+    def set_board(self, digit_list: list[int]) -> None:
         """
         设置局面
 
@@ -46,7 +44,7 @@ class Board:
         self.digit_list = digit_list
         self.sync_data()
 
-    def generate_grid(self, size: int) -> None:
+    def generate_board(self, size: int) -> None:
         """
         生成随机局面
 
@@ -55,56 +53,6 @@ class Board:
         """
         self.digit_list = [randint(1, 9) for _ in range(size)]
         self.sync_data()
-
-    def get_digit_by_coord(self, row_index: int, col_index: int) -> int:
-        """
-        按坐标获取数字
-
-        Args:
-            row_index: 行索引（0-based）
-            col_index: 列索引（0-based）
-
-        Returns:
-            digit: 指定位置的数字
-        """
-        return self.digit_grid[row_index][col_index]
-
-    def get_digit_by_index(self, global_index: int) -> int:
-        """
-        按索引获取数字
-
-        Args:
-            global_index: 全局索引（0-based）
-
-        Returns:
-            digit: 指定位置的数字
-        """
-        return self.digit_list[global_index]
-
-    def set_digit_by_coord(self, row_index: int, col_index: int, digit: int) -> None:
-        """
-        按坐标放置数字
-
-        Args:
-            row_index: 行索引（0-based）
-            col_index: 列索引（0-based）
-            digit: 要放置的数字
-        """
-        global_index = 9 * row_index + col_index
-        self.digit_list[global_index] = digit
-        self.digit_grid[row_index][col_index] = digit
-
-    def set_digit_by_index(self, global_index: int, digit: int) -> None:
-        """
-        按索引放置数字
-
-        Args:
-            global_index: 全局索引（0-based）
-            digit: 要放置的数字
-        """
-        row_index, col_index = self.calc_coord(global_index)
-        self.digit_list[global_index] = digit
-        self.digit_grid[row_index][col_index] = digit
 
     def is_matching(self, global_index1: int, global_index2: int) -> bool:
         """
@@ -120,8 +68,8 @@ class Board:
         if global_index1 == global_index2:
             return False
 
-        digit1 = self.get_digit_by_index(global_index1)
-        digit2 = self.get_digit_by_index(global_index2)
+        digit1 = self.digit_list[global_index1]
+        digit2 = self.digit_list[global_index2]
 
         if digit1 == 0 or digit2 == 0:
             return False
@@ -133,14 +81,14 @@ class Board:
             # 相同行
             if row_index1 == row_index2:
                 for col_index in range(min(col_index1, col_index2) + 1, max(col_index1, col_index2)):
-                    if self.get_digit_by_coord(row_index1, col_index):
+                    if self.digit_grid[row_index1][col_index]:
                         return False
                 return True
 
             # 相同列
             elif col_index1 == col_index2:
                 for row_index in range(min(row_index1, row_index2) + 1, max(row_index1, row_index2)):
-                    if self.get_digit_by_coord(row_index, col_index1):
+                    if self.digit_grid[row_index][col_index1]:
                         return False
                 return True
 
@@ -149,16 +97,16 @@ class Board:
                   row_index1 - row_index2 == col_index1 - col_index2):
                 row_step = 1 if row_index2 > row_index1 else -1
                 col_step = 1 if col_index2 > col_index1 else -1
-                for row, col in zip(range(row_index1 + row_step, row_index2, row_step),
+                for row_index, col_index in zip(range(row_index1 + row_step, row_index2, row_step),
                                     range(col_index1 + col_step, col_index2, col_step)):
-                    if self.get_digit_by_coord(row, col):
+                    if self.digit_grid[row_index][col_index]:
                         return False
                 return True
 
             # 跨行首尾
             elif abs(row_index1 - row_index2) == 1:
                 for global_index in range(min(global_index1, global_index2) + 1, max(global_index1, global_index2)):
-                    if self.get_digit_by_index(global_index):
+                    if self.digit_list[global_index]:
                         return False
                 return True
 
@@ -172,7 +120,6 @@ class Board:
             new_board: Board实例
         """
         new_board = Board()
-        new_board.digit_count = self.digit_count
         new_board.digit_list = self.digit_list[:]
         new_board.digit_grid = [row[:] for row in self.digit_grid]
         return new_board
@@ -191,6 +138,10 @@ class Board:
     def match(self, global_index1: int, global_index2: int) -> None:
         """配对消除"""
         if self.is_matching(global_index1, global_index2):
-            self.set_digit_by_index(global_index1, 0)
-            self.set_digit_by_index(global_index2, 0)
+            row_index1, col_index1 = self.calc_coord(global_index1)
+            row_index2, col_index2 = self.calc_coord(global_index2)
+            self.digit_grid[row_index1][col_index1] = 0
+            self.digit_grid[row_index2][col_index2] = 0
+            self.digit_list[global_index1] = 0
+            self.digit_list[global_index2] = 0
             self.clear()
