@@ -13,17 +13,6 @@ class Board:
         digit_grid = [self.digit_list[i: i + 9] for i in range(0, len(self.digit_list), 9)]
         return "\n".join(" ".join(str(digit) if digit != 0 else "." for digit in row) for row in digit_grid)
 
-    def safe_copy(self) -> 'Board':
-        """
-        安全拷贝
-
-        Returns:
-            new_board: Board实例
-        """
-        new_board = Board()
-        new_board.digit_list = self.digit_list[:]
-        return new_board
-
     def set_board(self, digit_list: list[int]) -> None:
         """
         设置局面

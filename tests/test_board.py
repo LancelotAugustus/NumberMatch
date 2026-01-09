@@ -560,51 +560,6 @@ class TestMatchOperation:
         assert len(digit_grid) == 0  # 第一行被完全移除
 
 
-class TestSafeCopy:
-    """测试 safe_copy() 方法"""
-
-    def test_safe_copy_creates_independent_copy(self):
-        """测试 safe_copy() 创建独立副本"""
-        board = Board()
-        board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        board_copy = board.safe_copy()
-
-        # 验证内容相同
-        assert board_copy.digit_list == board.digit_list
-
-        # 验证是独立副本
-        board.digit_list[0] = 99
-        assert board_copy.digit_list[0] == 1
-        assert board.digit_list[0] == 99
-
-    def test_safe_copy_empty_board(self):
-        """测试空棋盘的 safe_copy()"""
-        board = Board()
-        board_copy = board.safe_copy()
-
-        assert board_copy.digit_list == []
-        assert board_copy is not board
-
-    def test_safe_copy_type(self):
-        """测试 safe_copy() 返回正确类型"""
-        board = Board()
-        board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
-
-        board_copy = board.safe_copy()
-
-        assert isinstance(board_copy, Board)
-        assert type(board_copy) == Board
-
-
 class TestEdgeCases:
     """测试边界条件"""
 
