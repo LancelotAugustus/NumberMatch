@@ -94,14 +94,13 @@ board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1])
 
 ---
 
-### `can_match`
+### `_can_match`
 
 ```python
-@staticmethod
-def _can_match(digit1: int, digit2: int) -> bool
+def _can_match(self, global_index1: int, global_index2: int) -> bool
 ```
 
-**功能描述：** 判断两个数字是否满足配对条件。这是配对判断的底层方法，用于检查数字本身是否满足配对要求。
+**功能描述：** 判断两个位置的数字是否满足配对条件。这是配对判断的底层方法，通过全局索引获取数字后检查是否满足配对要求。
 
 **数字配对规则：** 两个数字可以配对的前提条件（满足任一即可）：
 
@@ -110,32 +109,34 @@ def _can_match(digit1: int, digit2: int) -> bool
 
 **参数：**
 
-| 参数名      | 类型    | 说明    |
-|----------|-------|-------|
-| `digit1` | `int` | 第一个数字 |
-| `digit2` | `int` | 第二个数字 |
+| 参数名             | 类型    | 说明                  |
+|-----------------|-------|---------------------|
+| `global_index1` | `int` | 第一个位置的全局索引（0-based） |
+| `global_index2` | `int` | 第二个位置的全局索引（0-based） |
 
 **返回值：** `bool` - 如果两个数字满足配对条件则返回 `True`，否则返回 `False`
 
 **使用示例：**
 
 ```python
-# 数值相同
-print(Board._can_match(5, 5))  # True
+board = Board()
+board.set_digits([1, 5, 3, 9, 2, 8, 4, 6, 7])
 
-# 和为10
-print(Board._can_match(3, 7))  # True
-print(Board._can_match(1, 9))  # True
+# 数值相同（5 和 5）
+print(board._can_match(1, 1))  # True
+
+# 和为10（1 和 9）
+print(board._can_match(0, 3))  # True
+
+# 和为10（3 和 7）
+print(board._can_match(2, 8))  # True
 
 # 既不相同，和也不为10
-print(Board._can_match(3, 6))  # False
-print(Board._can_match(2, 3))  # False
-
-# 与0配对（总是返回False，因为0表示空格）
-print(Board._can_match(5, 0))  # False
+print(board._can_match(0, 2))  # False
+print(board._can_match(4, 5))  # False
 ```
 
-**注意：** 此方法为静态私有方法，仅用于判断数字本身是否满足配对条件，不涉及位置和路径检查。
+**注意：** 此方法为私有实例方法，通过全局索引访问 `digit_list` 获取数字后进行判断。
 
 ---
 
