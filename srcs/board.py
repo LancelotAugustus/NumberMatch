@@ -24,12 +24,21 @@ class Board:
 
     @staticmethod
     def _can_match(digit1: int, digit2: int) -> bool:
-        """是否可以配对"""
+        """
+        是否能够配对
+
+        Args:
+            digit1: 第一个数字
+            digit2: 第二个数字
+
+        Returns:
+            can_match: 如果能够配对则返回True，否则返回False
+        """
         return digit1 == digit2 or digit1 + digit2 == 10
 
     def _is_matching(self, global_index1: int, global_index2: int) -> bool:
         """
-        是否配对
+        是否能够配对消除
 
         Args:
             global_index1: 全局索引（0-based）
