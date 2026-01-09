@@ -5,7 +5,12 @@ class TwinBoard(Board):
     """孪生棋盘类"""
 
     def __init__(self, board: Board):
-        """初始化孪生棋盘"""
+        """
+        初始化孪生棋盘
+
+        Args:
+            board: Board实例
+        """
         super().__init__()
         self.digit_list = [min(digit, 10 - digit) if digit else 0 for digit in board.digit_list]
         self._update_information()

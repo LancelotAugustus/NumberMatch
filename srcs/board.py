@@ -1,6 +1,3 @@
-from random import randint
-
-
 class Board:
     """棋盘类"""
 
