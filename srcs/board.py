@@ -13,7 +13,7 @@ class Board:
         digit_grid = [self.digit_list[i: i + 9] for i in range(0, len(self.digit_list), 9)]
         return "\n".join(" ".join(str(digit) if digit != 0 else "." for digit in row) for row in digit_grid)
 
-    def set_board(self, digit_list: list[int]) -> None:
+    def set_digits(self, digit_list: list[int]) -> None:
         """
         设置局面
 
@@ -21,15 +21,6 @@ class Board:
             digit_list: 表示局面的整数列表，使用0表示空格
         """
         self.digit_list = digit_list
-
-    def generate_board(self, size: int) -> None:
-        """
-        生成随机局面
-
-        Args:
-            size: 棋盘尺寸
-        """
-        self.digit_list = [randint(1, 9) for _ in range(size)]
 
     @staticmethod
     def _can_match(digit1: int, digit2: int) -> bool:

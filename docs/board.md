@@ -60,7 +60,7 @@ def __str__(self) -> str
 
 ```python
 board = Board()
-board.set_board([1, 2, 3, 0, 4, 5, 6, 7, 8, 9])
+board.set_digits([1, 2, 3, 0, 4, 5, 6, 7, 8, 9])
 print(board)
 # 输出：
 # 1 2 3 . 4 5 6 7 8
@@ -69,10 +69,10 @@ print(board)
 
 ---
 
-### `set_board`
+### `set_digits`
 
 ```python
-def set_board(self, digit_list: list[int]) -> None
+def set_digits(self, digit_list: list[int]) -> None
 ```
 
 **功能描述：** 设置棋盘的当前局面。直接用提供的数字列表替换现有的 `digit_list`。
@@ -89,32 +89,7 @@ def set_board(self, digit_list: list[int]) -> None
 
 ```python
 board = Board()
-board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1])
-```
-
----
-
-### `generate_board`
-
-```python
-def generate_board(self, size: int) -> None
-```
-
-**功能描述：** 生成一个随机数字填充的棋盘。棋盘大小由 `size` 参数指定，每个位置随机填充 1-9 的整数。
-
-**参数：**
-
-| 参数名    | 类型    | 说明         |
-|--------|-------|------------|
-| `size` | `int` | 棋盘尺寸（格子总数） |
-
-**返回值：** `None`
-
-**使用示例：**
-
-```python
-board = Board()
-board.generate_board(81)  # 生成 9×9 的完整棋盘
+board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1])
 ```
 
 ---
@@ -207,7 +182,7 @@ def _is_matching(self, global_index1: int, global_index2: int) -> bool
 
 ```python
 board = Board()
-board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 0, 0, 0, 0, 0, 1])
+board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 0, 0, 0, 0, 0, 1])
 
 # 相同行配对（1 和 9 和为 10）
 print(board._is_matching(0, 8))  # True
@@ -239,9 +214,9 @@ def _clear(self) -> None
 
 ```python
 board = Board()
-board.set_board([1, 2, 3, 0, 0, 0, 0, 0, 0,  # 第一行有数字
-                 0, 0, 0, 0, 0, 0, 0, 0, 0,  # 第二行为空行
-                 4, 5, 6, 0, 0, 0, 0, 0, 0])  # 第三行有数字
+board.set_digits([1, 2, 3, 0, 0, 0, 0, 0, 0,  # 第一行有数字
+                  0, 0, 0, 0, 0, 0, 0, 0, 0,  # 第二行为空行
+                  4, 5, 6, 0, 0, 0, 0, 0, 0])  # 第三行有数字
 board._clear()
 # _clear 后 digit_list 变为 [1, 2, 3, 4, 5, 6]，空行被移除
 ```
@@ -266,7 +241,7 @@ def fill(self) -> None
 
 ```python
 board = Board()
-board.set_board([1, 2, 0, 3, 0])
+board.set_digits([1, 2, 0, 3, 0])
 board.fill()  # 填充后 digit_list 为 [1, 2, 0, 3, 0, 1, 2, 3]
 ```
 
@@ -294,7 +269,7 @@ def match(self, global_index1: int, global_index2: int) -> None
 
 ```python
 board = Board()
-board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
+board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9])
 
 # 1 和 9 和为 10，可以配对
 board.match(0, 8)
@@ -333,11 +308,10 @@ print(board.digit_list)  # [0, 2, 3, 4, 5, 6, 7, 8, 0]
 
 本类中的方法按照访问级别分为以下几类：
 
-| 方法名                                            | 访问级别 | 说明                      |
-|------------------------------------------------|------|-------------------------|
-| `__init__`, `__str__`                          | 特殊方法 | Python 特殊方法，用于初始化和字符串表示 |
-| `set_board`, `generate_board`, `match`, `fill` | 公开   | 公开接口，供外部代码调用            |
-| `_can_match`, `_is_matching`, `_clear`         | 私有   | 内部实现细节，主要供类内部方法使用       |
+| 方法名                                    | 访问级别 | 说明                      |
+|----------------------------------------|------|-------------------------|
+| `__init__`, `__str__`                  | 特殊方法 | Python 特殊方法，用于初始化和字符串表示 |
+| `set_digits`, `match`, `fill`          | 公开   | 公开接口，供外部代码调用            |
+| `_can_match`, `_is_matching`, `_clear` | 私有   | 内部实现细节，主要供类内部方法使用       |
 
 **设计原则：** 公开方法提供完整的游戏操作接口，私有方法封装内部实现细节，确保类的封装性和可维护性。
-

@@ -6,7 +6,6 @@ NumberMatch 项目 Board 类的全面单元测试
 2. 配对逻辑（四种匹配规则）
 3. 棋盘操作方法（clear, fill, match）
 4. 边界条件和异常处理
-5. 安全复制功能
 
 使用方法：
     pytest tests/test_board.py -v          # 详细输出
@@ -44,7 +43,7 @@ class TestBoardInitialization:
     def test_str_representation_with_numbers(self):
         """测试有数字的棋盘字符串表示"""
         board = Board()
-        board.set_board([1, 0, 3, 4, 5, 6, 7, 8, 9,
+        board.set_digits([1, 0, 3, 4, 5, 6, 7, 8, 9,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          1, 2, 3, 4, 5, 6, 7, 8, 9])
         board_str = str(board)
@@ -58,42 +57,21 @@ class TestBoardInitialization:
 class TestBoardSetup:
     """测试棋盘设置功能"""
 
-    def test_set_board_basic(self):
+    def test_set_digits_basic(self):
         """测试设置基本棋盘"""
         board = Board()
         test_data = [i % 9 + 1 for i in range(81)]
-        board.set_board(test_data)
+        board.set_digits(test_data)
         assert len(board.digit_list) == 81
         assert board.digit_list == test_data
 
-    def test_set_board_with_zeros(self):
+    def test_set_digits_with_zeros(self):
         """测试设置包含零值的棋盘"""
         board = Board()
         test_data = [1, 0, 3, 0, 5, 0, 7, 0, 9] * 3
-        board.set_board(test_data)
+        board.set_digits(test_data)
         assert len(board.digit_list) == 27
         assert board.digit_list == test_data
-
-    def test_generate_board_size(self):
-        """测试生成指定大小的随机棋盘"""
-        board = Board()
-        board.generate_board(45)
-        assert len(board.digit_list) == 45
-        assert all(1 <= d <= 9 for d in board.digit_list)
-
-    def test_generate_board_multiple_calls(self):
-        """测试多次生成棋盘的独立性"""
-        board = Board()
-        board.generate_board(9)
-        first_result = board.digit_list[:]
-
-        board.generate_board(9)
-        second_result = board.digit_list[:]
-
-        # 两次生成的结果可能不同（随机性），但结构应该一致
-        assert len(first_result) == len(second_result) == 9
-        assert all(1 <= d <= 9 for d in first_result)
-        assert all(1 <= d <= 9 for d in second_result)
 
 
 class TestSameRowMatching:
@@ -102,7 +80,7 @@ class TestSameRowMatching:
     def test_same_row_match_success(self):
         """测试同行无阻挡时成功匹配"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 1,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -116,7 +94,7 @@ class TestSameRowMatching:
     def test_same_row_match_blocked(self):
         """测试同行有阻挡时匹配失败"""
         board = Board()
-        board.set_board([1, 0, 2, 0, 0, 0, 0, 0, 1,
+        board.set_digits([1, 0, 2, 0, 0, 0, 0, 0, 1,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -130,7 +108,7 @@ class TestSameRowMatching:
     def test_same_row_adjacent_match(self):
         """测试同行相邻数字匹配"""
         board = Board()
-        board.set_board([1, 1, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 1, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -148,7 +126,7 @@ class TestSameColumnMatching:
     def test_same_column_match_success(self):
         """测试同列无阻挡时成功匹配"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -162,7 +140,7 @@ class TestSameColumnMatching:
     def test_same_column_match_blocked(self):
         """测试同列有阻挡时匹配失败"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -177,7 +155,7 @@ class TestSameColumnMatching:
     def test_same_column_adjacent_match(self):
         """测试同列相邻数字匹配"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
                          1, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -195,7 +173,7 @@ class TestDiagonalMatching:
     def test_main_diagonal_match_success(self):
         """测试主对角线匹配成功"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 1, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -209,7 +187,7 @@ class TestDiagonalMatching:
     def test_anti_diagonal_match_success(self):
         """测试反对角线匹配成功"""
         board = Board()
-        board.set_board([0, 0, 0, 0, 0, 0, 0, 0, 1,
+        board.set_digits([0, 0, 0, 0, 0, 0, 0, 0, 1,
                          0, 0, 0, 0, 0, 0, 0, 1, 0,
                          0, 0, 0, 0, 0, 0, 1, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -223,7 +201,7 @@ class TestDiagonalMatching:
     def test_diagonal_match_blocked(self):
         """测试对角线有阻挡时匹配失败"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 2, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 1, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -241,7 +219,7 @@ class TestCrossRowMatching:
     def test_cross_row_match_success(self):
         """测试跨行首尾匹配成功"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 1,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -255,7 +233,7 @@ class TestCrossRowMatching:
     def test_cross_row_match_blocked(self):
         """测试跨行首尾有阻挡时匹配失败"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
                          2, 0, 0, 0, 0, 0, 0, 0, 1,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -269,7 +247,7 @@ class TestCrossRowMatching:
     def test_cross_row_non_adjacent_no_match(self):
         """测试跨行非相邻行不能匹配"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -287,7 +265,7 @@ class TestSumToTenMatching:
     def test_sum_to_ten_same_row(self):
         """测试同行和为10的匹配"""
         board = Board()
-        board.set_board([3, 0, 0, 0, 0, 0, 0, 0, 7,
+        board.set_digits([3, 0, 0, 0, 0, 0, 0, 0, 7,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -301,7 +279,7 @@ class TestSumToTenMatching:
     def test_sum_to_ten_same_column(self):
         """测试同列和为10的匹配"""
         board = Board()
-        board.set_board([6, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([6, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -315,7 +293,7 @@ class TestSumToTenMatching:
     def test_sum_to_ten_diagonal(self):
         """测试对角线和为10的匹配"""
         board = Board()
-        board.set_board([2, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([2, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -329,7 +307,7 @@ class TestSumToTenMatching:
     def test_sum_not_ten_no_match(self):
         """测试和不为10时不能匹配"""
         board = Board()
-        board.set_board([3, 0, 0, 0, 0, 0, 0, 0, 6,
+        board.set_digits([3, 0, 0, 0, 0, 0, 0, 0, 6,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -347,7 +325,7 @@ class TestNonMatchingCases:
     def test_same_index_no_match(self):
         """测试相同索引不能匹配"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 1,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -361,7 +339,7 @@ class TestNonMatchingCases:
     def test_zero_digit_no_match(self):
         """测试包含零值不能匹配"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 1,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -376,7 +354,7 @@ class TestNonMatchingCases:
     def test_different_numbers_no_match(self):
         """测试不同数字且和不等于10时不能匹配"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 3,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 3,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -390,7 +368,7 @@ class TestNonMatchingCases:
     def test_blocked_path_no_match(self):
         """测试路径被阻挡时不能匹配"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 1,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -410,7 +388,7 @@ class TestClearAndFill:
     def test_clear_removes_empty_rows(self):
         """测试 clear() 移除空行"""
         board = Board()
-        board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9,
+        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          1, 2, 3, 4, 5, 6, 7, 8, 9,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -433,7 +411,7 @@ class TestClearAndFill:
     def test_clear_no_empty_rows(self):
         """测试 clear() 处理无空行的情况"""
         board = Board()
-        board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9,
+        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9,
                          1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         original_length = len(board.digit_list)
@@ -446,7 +424,7 @@ class TestClearAndFill:
     def test_clear_all_empty(self):
         """测试 clear() 处理全空棋盘"""
         board = Board()
-        board.set_board([0, 0, 0, 0, 0, 0, 0, 0, 0,
+        board.set_digits([0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0])
 
         board._clear()
@@ -457,7 +435,7 @@ class TestClearAndFill:
     def test_fill_appends_remaining_digits(self):
         """测试 fill() 追加剩余数字"""
         board = Board()
-        board.set_board([1, 0, 3, 0, 5, 0, 7, 0, 9,
+        board.set_digits([1, 0, 3, 0, 5, 0, 7, 0, 9,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          1, 2, 3, 4, 5, 6, 7, 8, 9])
 
@@ -475,7 +453,7 @@ class TestClearAndFill:
     def test_fill_no_zeros(self):
         """测试 fill() 处理无零值的情况"""
         board = Board()
-        board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         original_length = len(board.digit_list)
         board.fill()
@@ -487,7 +465,7 @@ class TestClearAndFill:
     def test_fill_all_zeros(self):
         """测试 fill() 处理全零值的情况"""
         board = Board()
-        board.set_board([0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([0, 0, 0, 0, 0, 0, 0, 0, 0])
 
         original_length = len(board.digit_list)
         board.fill()
@@ -502,7 +480,7 @@ class TestMatchOperation:
     def test_match_successful_removes_pairs(self):
         """测试成功配对消除"""
         board = Board()
-        board.set_board([3, 0, 0, 0, 0, 0, 0, 0, 7,
+        board.set_digits([3, 0, 0, 0, 0, 0, 0, 0, 7,
                          1, 2, 3, 4, 5, 6, 7, 8, 9,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -524,7 +502,7 @@ class TestMatchOperation:
     def test_match_unsuccessful_no_removal(self):
         """测试不成功配对时不消除"""
         board = Board()
-        board.set_board([1, 0, 0, 0, 0, 0, 0, 0, 3,
+        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 3,
                          1, 2, 3, 4, 5, 6, 7, 8, 9,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -543,7 +521,7 @@ class TestMatchOperation:
     def test_match_with_different_match_types(self):
         """测试不同类型的匹配都能正确消除"""
         board = Board()
-        board.set_board([5, 0, 0, 0, 0, 0, 0, 0, 5,
+        board.set_digits([5, 0, 0, 0, 0, 0, 0, 0, 5,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
                          0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -581,7 +559,7 @@ class TestEdgeCases:
     def test_single_element_board(self):
         """测试单元素棋盘"""
         board = Board()
-        board.set_board([5])
+        board.set_digits([5])
 
         assert len(board.digit_list) == 1
         assert board.digit_list[0] == 5
@@ -590,7 +568,7 @@ class TestEdgeCases:
     def test_boundary_indices(self):
         """测试边界索引"""
         board = Board()
-        board.set_board([1] * 81)  # 完整棋盘
+        board.set_digits([1] * 81)  # 完整棋盘
 
         # 测试四角
         assert board._is_matching(0, 8) is False  # 左上角同行
@@ -601,7 +579,7 @@ class TestEdgeCases:
     def test_out_of_range_indices(self):
         """测试越界索引"""
         board = Board()
-        board.set_board([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         with pytest.raises(IndexError):
             board._is_matching(0, 9)  # 第二个索引越界
@@ -612,7 +590,7 @@ class TestEdgeCases:
     def test_mixed_match_scenarios(self):
         """测试混合匹配场景"""
         board = Board()
-        board.set_board([1, 0, 9, 0, 0, 0, 0, 0, 0,  # 第一行：1和9可以匹配（和为10）
+        board.set_digits([1, 0, 9, 0, 0, 0, 0, 0, 0,  # 第一行：1和9可以匹配（和为10）
                          2, 0, 0, 0, 0, 0, 0, 0, 0,  # 第二行
                          3, 0, 0, 0, 0, 0, 0, 0, 0,  # 第三行
                          0, 0, 0, 0, 0, 0, 0, 0, 0,  # 空行
