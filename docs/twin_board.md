@@ -130,6 +130,37 @@ twin_board.set_digits([1, 2, 3, 4, 5, 0, 0, 0, 0])
 
 ---
 
+### `_update_information`
+
+```python
+def _update_information(self) -> None
+```
+
+**功能描述：** 更新配对信息。重新计算 `digit_pairs`（可达配对列表）和 `potential_num`（潜在配对数量）。
+
+**计算逻辑：**
+
+1. 清空 `digit_pairs` 列表和 `potential_num` 计数器
+2. 遍历所有位置对 `(i, j)`（其中 `i < j`）：
+    - 如果 `_can_match(i, j)` 为 `True`，则 `potential_num` 增加 1
+    - 如果 `_is_matching(i, j)` 为 `True`，则将 `(i, j)` 添加到 `digit_pairs`
+
+**参数：** 无
+
+**返回值：** `None`
+
+**使用示例：**
+
+```python
+twin_board = TwinBoard(board)
+twin_board.match(0, 8)  # 配对消除后
+twin_board._update_information()  # 手动更新配对信息
+print(twin_board.digit_pairs)  # 查看可达配对列表
+print(twin_board.potential_num)  # 查看潜在配对数量
+```
+
+---
+
 ### `_can_match`
 
 ```python
@@ -267,37 +298,6 @@ twin_board.fill()  # 填充后 digit_list 为 [1, 2, 3, 0, 0, 1, 2, 3, 0]
 ```
 
 **注意：** 此方法继承自 `Board` 类。
-
----
-
-### `_update_information`
-
-```python
-def _update_information(self) -> None
-```
-
-**功能描述：** 更新配对信息。重新计算 `digit_pairs`（可达配对列表）和 `potential_num`（潜在配对数量）。
-
-**计算逻辑：**
-
-1. 清空 `digit_pairs` 列表和 `potential_num` 计数器
-2. 遍历所有位置对 `(i, j)`（其中 `i < j`）：
-    - 如果 `_can_match(i, j)` 为 `True`，则 `potential_num` 增加 1
-    - 如果 `_is_matching(i, j)` 为 `True`，则将 `(i, j)` 添加到 `digit_pairs`
-
-**参数：** 无
-
-**返回值：** `None`
-
-**使用示例：**
-
-```python
-twin_board = TwinBoard(board)
-twin_board.match(0, 8)  # 配对消除后
-twin_board._update_information()  # 手动更新配对信息
-print(twin_board.digit_pairs)  # 查看可达配对列表
-print(twin_board.potential_num)  # 查看潜在配对数量
-```
 
 ---
 

@@ -199,7 +199,7 @@ print(board._is_matching(0, 1))  # False
 
 ---
 
-### `clear`
+### `_clear`
 
 ```python
 def _clear(self) -> None
