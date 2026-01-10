@@ -20,6 +20,7 @@ class Solver:
             board: Board实例
         """
         self.board = TwinBoard(board)
+        self.path = []
 
     def solve(self) -> bool:
         """
