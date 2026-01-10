@@ -140,7 +140,7 @@ print(board._can_match(4, 5))  # False
 
 ---
 
-### `is_matching`
+### `_is_matching`
 
 ```python
 def _is_matching(self, global_index1: int, global_index2: int) -> bool
@@ -210,17 +210,6 @@ def _clear(self) -> None
 **参数：** 无
 
 **返回值：** `None`
-
-**使用示例：**
-
-```python
-board = Board()
-board.set_digits([1, 2, 3, 0, 0, 0, 0, 0, 0,  # 第一行有数字
-                  0, 0, 0, 0, 0, 0, 0, 0, 0,  # 第二行为空行
-                  4, 5, 6, 0, 0, 0, 0, 0, 0])  # 第三行有数字
-board._clear()
-# _clear 后 digit_list 变为 [1, 2, 3, 4, 5, 6]，空行被移除
-```
 
 **注意：** 此方法为私有方法，通常在 `match()` 操作后自动调用。
 
@@ -316,3 +305,9 @@ print(board.digit_list)  # [0, 2, 3, 4, 5, 6, 7, 8, 0]
 | `_can_match`, `_is_matching`, `_clear` | 私有   | 内部实现细节，主要供类内部方法使用       |
 
 **设计原则：** 公开方法提供完整的游戏操作接口，私有方法封装内部实现细节，确保类的封装性和可维护性。
+
+## 注意事项
+
+1. **配对操作的副作用：** 调用 `match()` 方法会直接修改棋盘状态，将配对的两个位置设为 0。如果需要保留原始局面，应在调用前创建深拷贝。
+
+2. **空行的自动清理：** `match()` 方法执行后会调用 `_clear()` 自动清理空行，这会改变棋盘的结构和数字的索引位置。
