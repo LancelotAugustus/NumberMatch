@@ -10,6 +10,7 @@ class Solver:
     def __init__(self):
         """初始化求解器"""
         self.board = None
+        self.twin_board = None
         self.path = []
 
     def set_board(self, board: Board) -> None:
@@ -19,7 +20,8 @@ class Solver:
         Args:
             board: Board实例
         """
-        self.board = TwinBoard(board)
+        self.board = board
+        self.twin_board = TwinBoard(board)
         self.path = []
 
     def solve(self) -> bool:
@@ -29,12 +31,12 @@ class Solver:
         Returns:
             solvability: 如果能够清空棋盘则返回True，否则返回False
         """
-        while self.board.digit_pairs:
+        while self.twin_board.digit_pairs:
             best_digit_pair = None
             best_potential_num = -1
 
-            for digit_pair in self.board.digit_pairs:
-                simulated_board = copy.deepcopy(self.board)
+            for digit_pair in self.twin_board.digit_pairs:
+                simulated_board = copy.deepcopy(self.twin_board)
                 simulated_board.match(digit_pair[0], digit_pair[1])
                 potential_num = simulated_board.potential_num
                 if potential_num > best_potential_num:
@@ -42,9 +44,9 @@ class Solver:
                     best_digit_pair = digit_pair
 
             self.path.append(best_digit_pair)
-            self.board.match(best_digit_pair[0], best_digit_pair[1])
+            self.twin_board.match(best_digit_pair[0], best_digit_pair[1])
 
-            if not self.board.digit_list:
+            if not self.twin_board.digit_list:
                 return True
 
         return False
