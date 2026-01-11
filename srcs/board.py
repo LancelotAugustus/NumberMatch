@@ -34,16 +34,16 @@ class Board:
         digit2 = self.digit_list[global_index2]
         return digit1 == digit2 or digit1 + digit2 == 10
 
-    def _is_matching(self, global_index1: int, global_index2: int) -> bool:
+    def _is_pair(self, global_index1: int, global_index2: int) -> bool:
         """
-        是否能够配对消除
+        是否为可消除数字对
 
         Args:
             global_index1: 全局索引（0-based）
             global_index2: 全局索引（0-based）
 
         Returns:
-            is_matching: 如果能够配对消除则返回True，否则返回False
+            is_pair: 如果是可消除数字对则返回True，否则返回False
         """
         if not self._can_match(global_index1, global_index2):
             return False
@@ -114,7 +114,7 @@ class Board:
             global_index1: 全局索引（0-based）
             global_index2: 全局索引（0-based）
         """
-        if self._is_matching(global_index1, global_index2):
+        if self._is_pair(global_index1, global_index2):
             self.digit_list[global_index1] = 0
             self.digit_list[global_index2] = 0
             self._clear()

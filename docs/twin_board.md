@@ -154,7 +154,7 @@ def _update_information(self) -> None
 ```python
 twin_board = TwinBoard(board)
 twin_board.match(0, 8)  # 配对消除后
-twin_board._update_information()  # 手动更新配对信息
+twin_board._analyze()  # 手动更新配对信息
 print(twin_board.pair_list)  # 查看可达配对列表
 print(twin_board.potential_pair_count)  # 查看潜在配对数量
 ```
@@ -242,10 +242,10 @@ board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 0, 0, 0, 0, 0, 1])
 twin_board = TwinBoard(board)
 
 # 相同行配对（1 和 1 互补数都是 1）
-print(twin_board._is_matching(0, 8))  # True
+print(twin_board._is_pair(0, 8))  # True
 
 # 跨行首尾配对（9 转换为 1，1 还是 1）
-print(twin_board._is_matching(0, 17))  # True
+print(twin_board._is_pair(0, 17))  # True
 ```
 
 **注意：** 此方法继承自 `Board` 类。

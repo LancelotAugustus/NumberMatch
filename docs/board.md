@@ -186,13 +186,13 @@ board = Board()
 board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 0, 0, 0, 0, 0, 1])
 
 # 相同行配对（1 和 9 和为 10）
-print(board._is_matching(0, 8))  # True
+print(board._is_pair(0, 8))  # True
 
 # 跨行首尾配对（1 和 1 相同）
-print(board._is_matching(0, 17))  # True
+print(board._is_pair(0, 17))  # True
 
 # 间隔有数字，无法配对
-print(board._is_matching(0, 1))  # False
+print(board._is_pair(0, 1))  # False
 ```
 
 **注意：** 此方法为私有方法，主要供内部 `match()` 方法调用。

@@ -13,7 +13,7 @@ class TwinBoard(Board):
         """
         super().__init__()
         self.digit_list = [min(digit, 10 - digit) if digit else 0 for digit in board.digit_list]
-        self._update_information()
+        self._analyze()
 
     def _can_match(self, global_index1: int, global_index2: int) -> bool:
         """
@@ -28,16 +28,16 @@ class TwinBoard(Board):
         """
         return self.digit_list[global_index1] == self.digit_list[global_index2]
 
-    def _update_information(self) -> None:
+    def _analyze(self) -> None:
         """更新信息"""
         self.pair_list = []
-        self.potential_pair_count = 0
+        self.score = 0
 
         for i in range(len(self.digit_list)):
             for j in range(i + 1, len(self.digit_list)):
                 if self._can_match(i, j):
-                    self.potential_pair_count += 1
-                if self._is_matching(i, j):
+                    self.score += 1
+                if self._is_pair(i, j):
                     self.pair_list.append((i, j))
 
     def match(self, global_index1: int, global_index2: int) -> None:
@@ -49,4 +49,4 @@ class TwinBoard(Board):
             global_index2: 全局索引（0-based）
         """
         super().match(global_index1, global_index2)
-        self._update_information()
+        self._analyze()

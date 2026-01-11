@@ -267,7 +267,7 @@ class TestTwinBoardInheritedMatching:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board._is_matching(0, 8) is True
+        assert twin_board._is_pair(0, 8) is True
 
     def test_inherited_same_row_blocked(self):
         """测试继承的同行匹配阻挡逻辑"""
@@ -284,7 +284,7 @@ class TestTwinBoardInheritedMatching:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board._is_matching(0, 8) is False
+        assert twin_board._is_pair(0, 8) is False
 
     def test_inherited_same_column_matching(self):
         """测试继承的同列匹配逻辑"""
@@ -301,7 +301,7 @@ class TestTwinBoardInheritedMatching:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board._is_matching(0, 72) is True
+        assert twin_board._is_pair(0, 72) is True
 
     def test_inherited_diagonal_matching(self):
         """测试继承的对角线匹配逻辑"""
@@ -318,7 +318,7 @@ class TestTwinBoardInheritedMatching:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board._is_matching(0, 20) is True
+        assert twin_board._is_pair(0, 20) is True
 
     def test_inherited_cross_row_matching(self):
         """测试继承的跨行首尾匹配逻辑"""
@@ -335,7 +335,7 @@ class TestTwinBoardInheritedMatching:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board._is_matching(0, 17) is True
+        assert twin_board._is_pair(0, 17) is True
 
 
 class TestTwinBoardUpdateInformation:
@@ -550,9 +550,9 @@ class TestTwinBoardEdgeCases:
         twin_board = TwinBoard(board)
 
         with pytest.raises(IndexError):
-            twin_board._is_matching(0, 9)
+            twin_board._is_pair(0, 9)
         with pytest.raises(IndexError):
-            twin_board._is_matching(9, 0)
+            twin_board._is_pair(9, 0)
 
     def test_same_index_no_match(self):
         """测试相同索引不能匹配"""
@@ -569,7 +569,7 @@ class TestTwinBoardEdgeCases:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board._is_matching(0, 0) is False
+        assert twin_board._is_pair(0, 0) is False
 
     def test_zero_digit_no_match(self):
         """测试包含零值不能匹配"""
@@ -586,8 +586,8 @@ class TestTwinBoardEdgeCases:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board._is_matching(0, 1) is False
-        assert twin_board._is_matching(1, 8) is False
+        assert twin_board._is_pair(0, 1) is False
+        assert twin_board._is_pair(1, 8) is False
 
     def test_transformation_edge_cases(self):
         """测试数字转换的边界情况"""
@@ -648,7 +648,7 @@ class TestTwinBoardVsBoard:
         board_copy.set_digits(board.digit_list[:])
         twin_board = TwinBoard(board)
 
-        assert board._is_matching(0, 8) == twin_board._is_matching(0, 8)
+        assert board._is_pair(0, 8) == twin_board._is_pair(0, 8)
 
     def test_digit_transformation_preserves_matchability(self):
         """测试数字转换保持可匹配性"""
@@ -666,4 +666,4 @@ class TestTwinBoardVsBoard:
         twin_board = TwinBoard(board)
 
         assert twin_board._can_match(0, 8) is True
-        assert twin_board._is_matching(0, 8) is True
+        assert twin_board._is_pair(0, 8) is True

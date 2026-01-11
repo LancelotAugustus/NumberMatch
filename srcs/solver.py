@@ -33,14 +33,14 @@ class Solver:
         """
         while self.twin_board.pair_list:
             best_digit_pair = None
-            best_potential_count = -1
+            best_score = -1
 
             for digit_pair in self.twin_board.pair_list:
                 simulated_board = copy.deepcopy(self.twin_board)
                 simulated_board.match(digit_pair[0], digit_pair[1])
-                potential_num = simulated_board.potential_pair_count
-                if potential_num > best_potential_count:
-                    best_potential_count = potential_num
+                score = simulated_board.score
+                if score > best_score:
+                    best_score = score
                     best_digit_pair = digit_pair
 
             self.path.append(best_digit_pair)

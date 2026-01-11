@@ -82,7 +82,7 @@ class TestSameRowMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 8) is True
+        assert board._is_pair(0, 8) is True
 
     def test_same_row_match_blocked(self):
         """测试同行有阻挡时匹配失败"""
@@ -96,7 +96,7 @@ class TestSameRowMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 8) is False
+        assert board._is_pair(0, 8) is False
 
     def test_same_row_adjacent_match(self):
         """测试同行相邻数字匹配"""
@@ -110,7 +110,7 @@ class TestSameRowMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 1) is True
+        assert board._is_pair(0, 1) is True
 
 
 class TestSameColumnMatching:
@@ -128,7 +128,7 @@ class TestSameColumnMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           1, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 72) is True
+        assert board._is_pair(0, 72) is True
 
     def test_same_column_match_blocked(self):
         """测试同列有阻挡时匹配失败"""
@@ -143,7 +143,7 @@ class TestSameColumnMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           1, 0, 0, 0, 0, 0, 0, 0, 0])
         board.digit_list[45] = 2  # 在第5行第0列放置阻挡
-        assert board._is_matching(0, 72) is False
+        assert board._is_pair(0, 72) is False
 
     def test_same_column_adjacent_match(self):
         """测试同列相邻数字匹配"""
@@ -157,7 +157,7 @@ class TestSameColumnMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 9) is True
+        assert board._is_pair(0, 9) is True
 
 
 class TestDiagonalMatching:
@@ -175,7 +175,7 @@ class TestDiagonalMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 20) is True
+        assert board._is_pair(0, 20) is True
 
     def test_anti_diagonal_match_success(self):
         """测试反对角线匹配成功"""
@@ -189,7 +189,7 @@ class TestDiagonalMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(8, 16) is True
+        assert board._is_pair(8, 16) is True
 
     def test_diagonal_match_blocked(self):
         """测试对角线有阻挡时匹配失败"""
@@ -203,7 +203,7 @@ class TestDiagonalMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 20) is False
+        assert board._is_pair(0, 20) is False
 
 
 class TestCrossRowMatching:
@@ -221,7 +221,7 @@ class TestCrossRowMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 17) is True
+        assert board._is_pair(0, 17) is True
 
     def test_cross_row_match_blocked(self):
         """测试跨行首尾有阻挡时匹配失败"""
@@ -235,7 +235,7 @@ class TestCrossRowMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 17) is False
+        assert board._is_pair(0, 17) is False
 
     def test_cross_row_non_adjacent_no_match(self):
         """测试相同行被阻挡时不能匹配"""
@@ -249,7 +249,7 @@ class TestCrossRowMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 1])
-        assert board._is_matching(0, 8) is False
+        assert board._is_pair(0, 8) is False
 
 
 class TestSumToTenMatching:
@@ -267,7 +267,7 @@ class TestSumToTenMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 8) is True
+        assert board._is_pair(0, 8) is True
 
     def test_sum_to_ten_same_column(self):
         """测试同列和为10的匹配"""
@@ -281,7 +281,7 @@ class TestSumToTenMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           4, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 72) is True
+        assert board._is_pair(0, 72) is True
 
     def test_sum_to_ten_diagonal(self):
         """测试对角线和为10的匹配"""
@@ -295,7 +295,7 @@ class TestSumToTenMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 8])
-        assert board._is_matching(0, 80) is True
+        assert board._is_pair(0, 80) is True
 
     def test_sum_not_ten_no_match(self):
         """测试和不为10时不能匹配"""
@@ -309,7 +309,7 @@ class TestSumToTenMatching:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 8) is False  # 3+6=9 ≠ 10
+        assert board._is_pair(0, 8) is False  # 3+6=9 ≠ 10
 
 
 class TestNonMatchingCases:
@@ -327,7 +327,7 @@ class TestNonMatchingCases:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 0) is False
+        assert board._is_pair(0, 0) is False
 
     def test_zero_digit_no_match(self):
         """测试包含零值不能匹配"""
@@ -341,8 +341,8 @@ class TestNonMatchingCases:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 1) is False  # 1和0，不能匹配
-        assert board._is_matching(1, 8) is False  # 0和1，不能匹配
+        assert board._is_pair(0, 1) is False  # 1和0，不能匹配
+        assert board._is_pair(1, 8) is False  # 0和1，不能匹配
 
     def test_different_numbers_no_match(self):
         """测试不同数字且和不等于10时不能匹配"""
@@ -356,7 +356,7 @@ class TestNonMatchingCases:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 8) is False  # 1和3，既不相同，和也不为10
+        assert board._is_pair(0, 8) is False  # 1和3，既不相同，和也不为10
 
     def test_blocked_path_no_match(self):
         """测试路径被阻挡时不能匹配"""
@@ -372,7 +372,7 @@ class TestNonMatchingCases:
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
         # 虽然1和1相同，但路径被阻挡（在索引1,2,3,4,5,6,7处有阻挡）
         board.digit_list[3] = 2  # 在中间添加阻挡
-        assert board._is_matching(0, 8) is False
+        assert board._is_pair(0, 8) is False
 
 
 class TestClearAndFill:
@@ -560,10 +560,10 @@ class TestEdgeCases:
         board = Board()
         board.set_digits([1] * 81)
 
-        assert board._is_matching(0, 8) is False
-        assert board._is_matching(0, 72) is False
-        assert board._is_matching(8, 80) is False
-        assert board._is_matching(72, 80) is False
+        assert board._is_pair(0, 8) is False
+        assert board._is_pair(0, 72) is False
+        assert board._is_pair(8, 80) is False
+        assert board._is_pair(72, 80) is False
 
     def test_out_of_range_indices(self):
         """测试越界索引"""
@@ -571,9 +571,9 @@ class TestEdgeCases:
         board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         with pytest.raises(IndexError):
-            board._is_matching(0, 9)
+            board._is_pair(0, 9)
         with pytest.raises(IndexError):
-            board._is_matching(9, 0)
+            board._is_pair(9, 0)
 
     def test_mixed_match_scenarios(self):
         """测试混合匹配场景"""
@@ -588,8 +588,8 @@ class TestEdgeCases:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-        assert board._is_matching(0, 2) is True
-        assert board._is_matching(0, 1) is False
+        assert board._is_pair(0, 2) is True
+        assert board._is_pair(0, 1) is False
 
         board.match(0, 2)
 
@@ -673,8 +673,8 @@ class TestDiagonalDirections:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 10) is True
-        assert board._is_matching(10, 11) is False
+        assert board._is_pair(0, 10) is True
+        assert board._is_pair(10, 11) is False
 
     def test_main_diagonal_blocked(self):
         """测试主对角线被阻挡"""
@@ -688,7 +688,7 @@ class TestDiagonalDirections:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 20) is False
+        assert board._is_pair(0, 20) is False
 
     def test_anti_diagonal_adjacent(self):
         """测试相邻反对角线匹配"""
@@ -702,8 +702,8 @@ class TestDiagonalDirections:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(8, 16) is True
-        assert board._is_matching(16, 17) is False
+        assert board._is_pair(8, 16) is True
+        assert board._is_pair(16, 17) is False
 
     def test_anti_diagonal_blocked(self):
         """测试反对角线被阻挡"""
@@ -717,7 +717,7 @@ class TestDiagonalDirections:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(8, 24) is False
+        assert board._is_pair(8, 24) is False
 
 
 class TestClearAndFillCombinations:
@@ -778,7 +778,7 @@ class TestCrossRowExtended:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 17) is True
+        assert board._is_pair(0, 17) is True
 
     def test_cross_row_non_adjacent_no_match(self):
         """测试跨行非相邻行不能匹配"""
@@ -793,9 +793,9 @@ class TestCrossRowExtended:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 2])
 
-        assert board._is_matching(0, 80) is False
-        assert board._is_matching(0, 17) is False
-        assert board._is_matching(8, 72) is False
+        assert board._is_pair(0, 80) is False
+        assert board._is_pair(0, 17) is False
+        assert board._is_pair(8, 72) is False
 
 
 class TestMatchDataStructure:
@@ -873,8 +873,8 @@ class TestAllMatchTypesCombined:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-        assert board._is_matching(0, 8) is True
-        assert board._is_matching(10, 16) is True
+        assert board._is_pair(0, 8) is True
+        assert board._is_pair(10, 16) is True
 
     def test_same_digit_adjacent_matches(self):
         """测试相同数字的相邻匹配"""
@@ -889,8 +889,8 @@ class TestAllMatchTypesCombined:
                           0, 0, 0, 0, 0, 0, 0, 5, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 5])
 
-        assert board._is_matching(0, 1) is True
-        assert board._is_matching(0, 9) is True
+        assert board._is_pair(0, 1) is True
+        assert board._is_pair(0, 9) is True
 
 
 class TestUnrelatedPositions:
@@ -908,7 +908,7 @@ class TestUnrelatedPositions:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 10) is False
+        assert board._is_pair(0, 10) is False
 
     def test_unrelated_positions_sum_to_ten(self):
         """测试和为10但位置完全无关（触发else分支）"""
@@ -922,7 +922,7 @@ class TestUnrelatedPositions:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 10) is False
+        assert board._is_pair(0, 10) is False
 
     def test_unrelated_positions_not_on_diagonal(self):
         """测试无关位置不满足对角线条件"""
@@ -936,7 +936,7 @@ class TestUnrelatedPositions:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 21) is False
+        assert board._is_pair(0, 21) is False
 
     def test_unrelated_positions_not_adjacent_rows(self):
         """测试无关位置不满足相邻行条件"""
@@ -950,4 +950,4 @@ class TestUnrelatedPositions:
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
-        assert board._is_matching(0, 17) is False
+        assert board._is_pair(0, 17) is False
