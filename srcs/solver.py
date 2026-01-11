@@ -31,7 +31,7 @@ class Solver:
         """
         while self.board.digit_pairs:
             best_digit_pair = None
-            best_potential_num = - 1
+            best_potential_num = -1
 
             for digit_pair in self.board.digit_pairs:
                 simulated_board = copy.deepcopy(self.board)

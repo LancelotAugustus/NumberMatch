@@ -58,7 +58,7 @@ class Board:
             return False
 
         row_index1, col_index1 = divmod(global_index1, 9)
-        row_index2, col_index2 = divmod(global_index1, 9)
+        row_index2, col_index2 = divmod(global_index2, 9)
 
         # 相同行
         if row_index1 == row_index2:
