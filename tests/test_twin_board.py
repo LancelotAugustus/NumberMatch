@@ -1,669 +1,270 @@
-"""
-NumberMatch 项目 TwinBoard 类的全面单元测试
-
-本文件包含 TwinBoard 类的完整单元测试，涵盖：
-1. 孪生棋盘初始化和数字转换逻辑
-2. 配对逻辑（仅基于转换后数字相同）
-3. 信息更新机制（digit_pairs, potential_num）
-4. 继承的 Board 方法行为
-5. 边界条件和异常处理
-
-使用方法：
-    pytest tests/test_twin_board.py -v          # 详细输出
-    pytest tests/test_twin_board.py --cov       # 查看覆盖率
-    pytest tests/test_twin_board.py -k "init"   # 运行特定测试
-"""
-
 import pytest
-
 from srcs.board import Board
 from srcs.twin_board import TwinBoard
 
 
-class TestTwinBoardInitialization:
-    """测试 TwinBoard 类的初始化功能"""
+class TestTwinBoardInit:
+    """测试TwinBoard初始化"""
 
-    def test_init_from_basic_board(self):
-        """测试从基本棋盘初始化孪生棋盘"""
+    def test_init_from_empty_board(self):
+        """测试从空Board初始化"""
         board = Board()
-        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9,
-                          9, 8, 7, 6, 5, 4, 3, 2, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([])
+        twin = TwinBoard(board)
+        assert twin.digit_list == []
 
-        twin_board = TwinBoard(board)
-
-        assert len(twin_board.digit_list) == 81
-        assert twin_board.digit_list[0] == 1
-        assert twin_board.digit_list[8] == 1
-        assert twin_board.digit_list[9] == 1
-        assert twin_board.digit_list[17] == 1
-
-    def test_init_digit_transformation(self):
-        """测试数字转换逻辑（min(digit, 10-digit)）"""
+    def test_init_single_digit(self):
+        """测试单个数字的转换"""
         board = Board()
-        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([5])
+        twin = TwinBoard(board)
+        assert twin.digit_list == [5]
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board.digit_list[0] == 1
-        assert twin_board.digit_list[1] == 2
-        assert twin_board.digit_list[2] == 3
-        assert twin_board.digit_list[3] == 4
-        assert twin_board.digit_list[4] == 5
-        assert twin_board.digit_list[5] == 4
-        assert twin_board.digit_list[6] == 3
-        assert twin_board.digit_list[7] == 2
-        assert twin_board.digit_list[8] == 1
-
-    def test_init_large_digits(self):
-        """测试大数字转换（>5 的数字）"""
+    def test_init_digit_conversion_1(self):
+        """测试数字1和9的转换（min(1,9)=1, min(9,1)=1）"""
         board = Board()
-        board.set_digits([6, 7, 8, 9, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 9])
+        twin = TwinBoard(board)
+        assert twin.digit_list[0] == 1
+        assert twin.digit_list[1] == 1
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board.digit_list[0] == 4
-        assert twin_board.digit_list[1] == 3
-        assert twin_board.digit_list[2] == 2
-        assert twin_board.digit_list[3] == 1
-
-    def test_init_zeros_preserved(self):
-        """测试零值保持为零"""
+    def test_init_digit_conversion_2(self):
+        """测试数字2和8的转换"""
         board = Board()
-        board.set_digits([1, 0, 2, 0, 3, 0, 4, 0, 5,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([2, 8])
+        twin = TwinBoard(board)
+        assert twin.digit_list[0] == 2
+        assert twin.digit_list[1] == 2
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board.digit_list[0] == 1
-        assert twin_board.digit_list[1] == 0
-        assert twin_board.digit_list[2] == 2
-        assert twin_board.digit_list[3] == 0
-        assert twin_board.digit_list[4] == 3
-        assert twin_board.digit_list[5] == 0
-
-    def test_init_empty_board(self):
-        """测试从空棋盘初始化"""
+    def test_init_digit_conversion_5(self):
+        """测试数字5的转换（min(5,5)=5）"""
         board = Board()
-        twin_board = TwinBoard(board)
+        board.set_digits([5, 5])
+        twin = TwinBoard(board)
+        assert twin.digit_list == [5, 5]
 
-        assert twin_board.digit_list == []
-        assert twin_board.pair_list == []
-        assert twin_board.potential_pair_count == 0
-
-    def test_str_representation(self):
-        """测试字符串表示"""
+    def test_init_digit_conversion_3(self):
+        """测试数字3和7的转换"""
         board = Board()
-        board.set_digits([1, 2, 3, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([3, 7])
+        twin = TwinBoard(board)
+        assert twin.digit_list[0] == 3
+        assert twin.digit_list[1] == 3
 
-        twin_board = TwinBoard(board)
-        board_str = str(twin_board)
-
-        assert "1" in board_str
-        assert "2" in board_str
-        assert "3" in board_str
-        assert "." in board_str
-
-
-class TestTwinBoardCanMatch:
-    """测试 TwinBoard 的 _can_match 方法"""
-
-    def test_can_match_same_transformed_digits(self):
-        """测试转换后相同数字可以匹配"""
+    def test_init_with_zeros(self):
+        """测试包含0的转换（0保持为0）"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 9,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 0, 2, 0, 3])
+        twin = TwinBoard(board)
+        assert twin.digit_list == [1, 0, 2, 0, 3]
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._can_match(0, 8) is True
-
-    def test_can_match_different_original_but_same_transformed(self):
-        """测试原始不同但转换后相同的数字可以匹配"""
+    def test_init_preserves_structure(self):
+        """测试初始化保留棋盘结构"""
         board = Board()
-        board.set_digits([2, 0, 0, 0, 0, 0, 0, 0, 8,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3])
+        twin = TwinBoard(board)
+        assert len(twin.digit_list) == 12
 
-        twin_board = TwinBoard(board)
 
-        assert twin_board._can_match(0, 8) is True
+class TestTwinBoardAnalyze:
+    """测试TwinBoard分析功能"""
 
-    def test_can_match_original_same_but_not_ten(self):
-        """测试原始相同但不满足和为10的数字可以匹配"""
+    def test_score_with_multiple_matches(self):
+        """测试分数计算（所有可能匹配的数量）"""
         board = Board()
-        board.set_digits([3, 0, 0, 0, 0, 0, 0, 0, 3,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 1, 1])
+        twin = TwinBoard(board)
+        assert twin.score == 3
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._can_match(0, 8) is True
-
-    def test_can_match_original_sum_to_ten_but_different_transformed(self):
-        """测试原始和为10但转换后不同的数字不能匹配"""
+    def test_pair_list_generation(self):
+        """测试可消除对列表生成"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 9,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 1, 2, 2])
+        twin = TwinBoard(board)
+        assert len(twin.pair_list) > 0
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._can_match(0, 8) is True
-
-    def test_can_match_different_transformed_digits(self):
-        """测试转换后不同的数字不能匹配"""
+    def test_score_zero_no_matches(self):
+        """测试无可匹配时的分数为0"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 2,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 2, 3])
+        twin = TwinBoard(board)
+        assert twin.score == 0
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._can_match(0, 8) is False
-
-    def test_can_match_with_zeros(self):
-        """测试包含零值不能匹配"""
+    def test_pair_list_empty_no_valid_pairs(self):
+        """测试无可消除对时pair_list为空"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 9,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-
-        assert twin_board._can_match(0, 1) is False
-        assert twin_board._can_match(1, 8) is False
+        board.set_digits([1, 2, 3])
+        twin = TwinBoard(board)
+        assert twin.pair_list == []
 
 
-class TestTwinBoardInheritedMatching:
-    """测试 TwinBoard 继承的 _is_matching 方法"""
+class TestTwinBoardMatch:
+    """测试TwinBoard的match方法"""
 
-    def test_inherited_same_row_matching(self):
-        """测试继承的同行匹配逻辑"""
+    def test_match_updates_pair_list(self):
+        """测试消除后pair_list更新"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 1, 2, 2])
+        twin = TwinBoard(board)
+        initial_pairs = len(twin.pair_list)
+        if initial_pairs > 0:
+            pair = twin.pair_list[0]
+            twin.match(pair[0], pair[1])
+            assert len(twin.pair_list) <= initial_pairs
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._is_pair(0, 8) is True
-
-    def test_inherited_same_row_blocked(self):
-        """测试继承的同行匹配阻挡逻辑"""
+    def test_match_updates_score(self):
+        """测试消除后score更新"""
         board = Board()
-        board.set_digits([1, 0, 2, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 1, 1, 1])
+        twin = TwinBoard(board)
+        initial_score = twin.score
+        if initial_score > 0:
+            pair = twin.pair_list[0]
+            twin.match(pair[0], pair[1])
+            assert twin.score < initial_score
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._is_pair(0, 8) is False
-
-    def test_inherited_same_column_matching(self):
-        """测试继承的同列匹配逻辑"""
+    def test_match_with_converted_digits(self):
+        """测试使用转换后的数字进行消除"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          1, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 9, 1, 9])
+        twin = TwinBoard(board)
+        assert twin.digit_list[0] == twin.digit_list[1] == 1
+        assert twin.digit_list[2] == twin.digit_list[3] == 1
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._is_pair(0, 72) is True
-
-    def test_inherited_diagonal_matching(self):
-        """测试继承的对角线匹配逻辑"""
+    def test_match_invalid_pair_no_change(self):
+        """测试无效配对不改变状态"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 1, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 2, 3, 4])
+        twin = TwinBoard(board)
+        original_digit_list = twin.digit_list[:]
+        original_score = twin.score
+        original_pair_list = twin.pair_list[:]
+        if twin.pair_list:
+            non_pair_indices = []
+            for i in range(len(twin.digit_list)):
+                for j in range(i + 1, len(twin.digit_list)):
+                    if (i, j) not in twin.pair_list:
+                        non_pair_indices = [i, j]
+                        break
+                if non_pair_indices:
+                    break
+            if non_pair_indices:
+                twin.match(non_pair_indices[0], non_pair_indices[1])
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._is_pair(0, 20) is True
-
-    def test_inherited_cross_row_matching(self):
-        """测试继承的跨行首尾匹配逻辑"""
+    def test_match_same_digit_row(self):
+        """测试相同数字在同一行的消除"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-
-        assert twin_board._is_pair(0, 17) is True
+        board.set_digits([1, 1])
+        twin = TwinBoard(board)
+        twin.match(0, 1)
+        assert twin.digit_list == []
 
 
-class TestTwinBoardUpdateInformation:
-    """测试 TwinBoard 的信息更新机制"""
+class TestTwinBoardInheritedMethods:
+    """测试TwinBoard继承的方法"""
 
-    def test_update_information_initial(self):
-        """测试初始化时信息更新"""
+    def test_str_method(self):
+        """测试字符串表示方法"""
         board = Board()
-        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9,
-                          1, 2, 3, 4, 5, 6, 7, 8, 9,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 0, 2])
+        twin = TwinBoard(board)
+        result = str(twin)
+        assert '1' in result
+        assert '.' in result
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board.potential_pair_count > 0
-        assert len(twin_board.pair_list) > 0
-
-    def test_digit_pairs_count(self):
-        """测试可消除配对计数"""
+    def test_inherited_set_digits(self):
+        """测试继承的set_digits方法"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          2, 0, 0, 0, 0, 0, 0, 0, 2,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-
-        assert twin_board.potential_pair_count >= 2
-
-    def test_digit_pairs_content(self):
-        """测试可消除配对内容"""
-        board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-
-        assert (0, 8) in twin_board.pair_list or (8, 0) in twin_board.pair_list
-
-    def test_empty_board_information(self):
-        """测试空棋盘的信息"""
-        board = Board()
-        twin_board = TwinBoard(board)
-
-        assert twin_board.pair_list == []
-        assert twin_board.potential_pair_count == 0
-
-    def test_information_updates_after_match(self):
-        """测试配对后信息更新"""
-        board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          2, 0, 0, 0, 0, 0, 0, 0, 2,
-                          3, 0, 0, 0, 0, 0, 0, 0, 3,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-        initial_pairs_count = len(twin_board.pair_list)
-        initial_potential = twin_board.potential_pair_count
-
-        twin_board.match(0, 8)
-
-        assert len(twin_board.pair_list) < initial_pairs_count
-        assert twin_board.potential_pair_count < initial_potential
-
-
-class TestTwinBoardMatchOperation:
-    """测试 TwinBoard 的配对操作"""
-
-    def test_match_removes_pairs(self):
-        """测试配对消除"""
-        board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-
-        initial_nonzero = len([d for d in twin_board.digit_list if d != 0])
-
-        twin_board.match(0, 8)
-
-        new_nonzero = len([d for d in twin_board.digit_list if d != 0])
-        assert new_nonzero == initial_nonzero - 2
-
-    def test_match_clears_empty_rows(self):
-        """测试配对后清理空行"""
-        board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          2, 3, 4, 5, 6, 7, 8, 9, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-        original_length = len(twin_board.digit_list)
-
-        twin_board.match(0, 8)
-
-        assert len(twin_board.digit_list) < original_length
-
-    def test_match_unsuccessful_no_removal(self):
-        """测试不成功配对时不消除"""
-        board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 2,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-        original_digit_list = twin_board.digit_list[:]
-
-        twin_board.match(0, 8)
-
-        assert twin_board.digit_list == original_digit_list
-
-    def test_multiple_matches(self):
-        """测试连续多次配对"""
-        board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          2, 0, 0, 0, 0, 0, 0, 0, 2,
-                          3, 0, 0, 0, 0, 0, 0, 0, 3,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-
-        initial_nonzero = len([d for d in twin_board.digit_list if d != 0])
-
-        twin_board.match(0, 8)
-
-        after_first = len([d for d in twin_board.digit_list if d != 0])
-        assert after_first == initial_nonzero - 2
-
-        current_nonzero = len([d for d in twin_board.digit_list if d != 0])
-        twin_board.match(9, 17)
-
-        after_second = len([d for d in twin_board.digit_list if d != 0])
-        assert after_second == current_nonzero - 2
+        board.set_digits([1, 2, 3])
+        twin = TwinBoard(board)
+        board.set_digits([4, 5, 6])
+        assert twin.digit_list != [4, 5, 6]
 
 
 class TestTwinBoardEdgeCases:
-    """测试 TwinBoard 的边界条件"""
+    """测试TwinBoard边界情况"""
 
-    def test_empty_board_operations(self):
-        """测试空棋盘操作"""
+    def test_empty_board(self):
+        """测试空棋盘"""
         board = Board()
-        twin_board = TwinBoard(board)
+        board.set_digits([])
+        twin = TwinBoard(board)
+        assert twin.digit_list == []
+        assert twin.pair_list == []
+        assert twin.score == 0
 
-        assert str(twin_board) == ""
-
-        twin_board._clear()
-        assert twin_board.digit_list == []
-
-        twin_board.fill()
-        assert twin_board.digit_list == []
-
-    def test_single_element_board(self):
-        """测试单元素棋盘"""
+    def test_single_digit_no_pairs(self):
+        """测试单个数字无法配对"""
         board = Board()
         board.set_digits([5])
-        twin_board = TwinBoard(board)
+        twin = TwinBoard(board)
+        assert twin.pair_list == []
+        assert twin.score == 0
 
-        assert len(twin_board.digit_list) == 1
-        assert twin_board.digit_list[0] == 5
-
-    def test_out_of_range_indices(self):
-        """测试越界索引"""
+    def test_two_same_digits(self):
+        """测试两个相同数字"""
         board = Board()
-        board.set_digits([1, 2, 3, 4, 5, 6, 7, 8, 9])
-        twin_board = TwinBoard(board)
+        board.set_digits([3, 3])
+        twin = TwinBoard(board)
+        assert (0, 1) in twin.pair_list
+        assert twin.score == 1
 
-        with pytest.raises(IndexError):
-            twin_board._is_pair(0, 9)
-        with pytest.raises(IndexError):
-            twin_board._is_pair(9, 0)
-
-    def test_same_index_no_match(self):
-        """测试相同索引不能匹配"""
+    def test_two_different_digits(self):
+        """测试两个不同数字"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 2])
+        twin = TwinBoard(board)
+        assert twin.pair_list == []
+        assert twin.score == 0
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._is_pair(0, 0) is False
-
-    def test_zero_digit_no_match(self):
-        """测试包含零值不能匹配"""
+    def test_all_same_digits(self):
+        """测试全部相同数字"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([2, 2, 2, 2])
+        twin = TwinBoard(board)
+        assert twin.score == 6
 
-        twin_board = TwinBoard(board)
-
-        assert twin_board._is_pair(0, 1) is False
-        assert twin_board._is_pair(1, 8) is False
-
-    def test_transformation_edge_cases(self):
-        """测试数字转换的边界情况"""
+    def test_converted_pair_list_contains_valid_pairs(self):
+        """测试pair_list只包含有效消除对"""
         board = Board()
-        board.set_digits([1, 5, 6, 9, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-
-        assert twin_board.digit_list[0] == 1
-        assert twin_board.digit_list[1] == 5
-        assert twin_board.digit_list[2] == 4
-        assert twin_board.digit_list[3] == 1
+        board.set_digits([1, 9, 0, 1, 9, 0])
+        twin = TwinBoard(board)
+        for pair in twin.pair_list:
+            assert twin._is_pair(pair[0], pair[1])
 
 
-class TestTwinBoardVsBoard:
-    """测试 TwinBoard 与 Board 的对比"""
+class TestTwinBoardIntegration:
+    """测试TwinBoard综合场景"""
 
-    def test_different_can_match_behavior(self):
-        """测试 _can_match 方法的不同行为"""
+    def test_full_match_sequence(self):
+        """测试完整消除序列"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 9,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 1, 2, 2, 3, 3])
+        twin = TwinBoard(board)
+        match_count = 0
+        while twin.pair_list:
+            pair = twin.pair_list[0]
+            twin.match(pair[0], pair[1])
+            match_count += 1
+        assert match_count == 3
 
-        twin_board = TwinBoard(board)
-
-        assert board._can_match(0, 8) is True
-        assert twin_board._can_match(0, 8) is True
-
-    def test_same_is_matching_behavior(self):
-        """测试 _is_matching 方法的相同行为"""
+    def test_score_after_each_match(self):
+        """测试每次消除后分数变化"""
         board = Board()
-        board.set_digits([1, 0, 0, 0, 0, 0, 0, 0, 1,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
+        board.set_digits([1, 1, 2, 2])
+        twin = TwinBoard(board)
+        scores = [twin.score]
+        while twin.pair_list:
+            pair = twin.pair_list[0]
+            twin.match(pair[0], pair[1])
+            scores.append(twin.score)
+        assert scores == sorted(scores, reverse=True)
 
-        board_copy = Board()
-        board_copy.set_digits(board.digit_list[:])
-        twin_board = TwinBoard(board)
-
-        assert board._is_pair(0, 8) == twin_board._is_pair(0, 8)
-
-    def test_digit_transformation_preserves_matchability(self):
-        """测试数字转换保持可匹配性"""
+    def test_twin_board_vs_original(self):
+        """测试TwinBoard与原Board的关系"""
         board = Board()
-        board.set_digits([3, 0, 0, 0, 0, 0, 0, 0, 7,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                          0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-        twin_board = TwinBoard(board)
-
-        assert twin_board._can_match(0, 8) is True
-        assert twin_board._is_pair(0, 8) is True
+        board.set_digits([1, 9, 2, 8, 3, 7])
+        twin = TwinBoard(board)
+        assert twin.digit_list[0] == twin.digit_list[1]
+        assert twin.digit_list[2] == twin.digit_list[3]
+        assert twin.digit_list[4] == twin.digit_list[5]

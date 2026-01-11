@@ -140,10 +140,10 @@ print(board._can_match(4, 5))  # False
 
 ---
 
-### `_is_matching`
+### `_is_pair`
 
 ```python
-def _is_matching(self, global_index1: int, global_index2: int) -> bool
+def _is_pair(self, global_index1: int, global_index2: int) -> bool
 ```
 
 **功能描述：** 判断两个位置是否满足配对条件。配对规则基于 NumberMatch 游戏的经典规则：首先检查两个数字是否满足 `can_match`
@@ -298,11 +298,11 @@ print(board.digit_list)  # [0, 2, 3, 4, 5, 6, 7, 8, 0]
 
 本类中的方法按照访问级别分为以下几类：
 
-| 方法名                                    | 访问级别 | 说明                      |
+| 方法名                                  | 访问级别 | 说明                      |
 |----------------------------------------|------|-------------------------|
 | `__init__`, `__str__`                  | 特殊方法 | Python 特殊方法，用于初始化和字符串表示 |
 | `set_digits`, `match`, `fill`          | 公开   | 公开接口，供外部代码调用            |
-| `_can_match`, `_is_matching`, `_clear` | 私有   | 内部实现细节，主要供类内部方法使用       |
+| `_can_match`, `_is_pair`, `_clear`     | 私有   | 内部实现细节，主要供类内部方法使用       |
 
 **设计原则：** 公开方法提供完整的游戏操作接口，私有方法封装内部实现细节，确保类的封装性和可维护性。
 

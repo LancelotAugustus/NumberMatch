@@ -223,7 +223,7 @@ twin_board = TwinBoard(board)
 
 # 获取分析数据
 print(f"可达配对列表：{twin_board.pair_list}")
-print(f"潜在配对数量：{twin_board.potential_pair_count}")
+print(f"潜在配对数量：{twin_board.score}")
 ```
 
 ### 索引系统
@@ -319,11 +319,11 @@ pytest --cov=srcs
 
 ### 测试文件说明
 
-| 测试文件                 | 测试对象        | 主要测试内容             |
-|----------------------|-------------|--------------------|
-| `test_board.py`      | Board 类     | 初始化、配对判断、消除操作、边界条件 |
-| `test_solver.py`     | Solver 类    | 求解逻辑、路径记录、状态管理     |
-| `test_twin_board.py` | TwinBoard 类 | 数字转换、配对判断、信息更新     |
+| 测试文件                 | 测试对象        | 主要测试内容                         |
+|----------------------|-------------|--------------------------------|
+| `test_board.py`      | Board 类     | 初始化、配对判断、消除操作、边界条件、棋盘清理        |
+| `test_solver.py`     | Solver 类    | 求解逻辑、路径记录、状态管理、最优路径计算           |
+| `test_twin_board.py` | TwinBoard 类 | 数字转换、配对判断、信息更新、score 和 pair_list 计算 |
 
 当前测试覆盖率达到 100%，所有测试用例均通过，确保代码质量和功能正确性。
 
@@ -356,7 +356,7 @@ board = Board()
 **`_can_match(global_index1: int, global_index2: int) -> bool`**  
 判断两个位置的数字是否满足配对条件。配对条件包括：数值相同或和为 10。这是配对判断的第一层过滤条件。
 
-**`_is_matching(global_index1: int, global_index2: int) -> bool`**  
+**`_is_pair(global_index1: int, global_index2: int) -> bool`**  
 判断两个位置是否满足配对消除条件。首先检查数字是否满足 `_can_match` 条件，然后检查路径是否可达。路径类型包括：相同行、相同列、对角线相邻、跨行首尾相邻。
 
 **`match(global_index1: int, global_index2: int) -> None`**  
@@ -381,20 +381,20 @@ twin_board = TwinBoard(board: Board)
 
 #### 特有属性
 
-**`digit_pairs`**
+**`pair_list`**
 
 - 类型：`list[tuple[int, int]]`
 - 说明：存储所有可达配对的位置对列表。每个元素是一个元组，包含两个全局索引，表示这两个位置可以配对消除。
 
-**`potential_num`**
+**`score`**
 
 - 类型：`int`
 - 说明：统计所有满足数字匹配条件的配对数量，用于评估局面的配对潜力。
 
 #### 特有方法
 
-**`_update_information() -> None`**  
-更新配对信息，重新计算 `digit_pairs` 和 `potential_num`。清空现有列表后，遍历所有位置对，累加满足条件的配对。
+**`_analyze() -> None`**  
+更新配对信息，重新计算 `pair_list` 和 `score`。清空现有列表后，遍历所有位置对，累加满足条件的配对。
 
 ### Solver 类
 
@@ -410,8 +410,13 @@ solver = Solver()
 
 **`board`**
 
+- 类型：`Board` 或 `None`
+- 说明：存储当前求解器正在处理的原始棋盘实例。初始值为 `None`，通过 `set_board()` 方法进行设置。
+
+**`twin_board`**
+
 - 类型：`TwinBoard` 或 `None`
-- 说明：存储当前求解器正在处理的棋盘实例。初始值为 `None`，通过 `set_board()` 方法进行设置。
+- 说明：存储当前求解器正在处理的孪生棋盘实例，用于求解计算。初始值为 `None`，通过 `set_board()` 方法自动创建。
 
 **`path`**
 
@@ -514,9 +519,7 @@ solver = Solver()
 类的设计注重封装性，将内部实现细节（如下划线前缀的方法）隐藏，只暴露必要的公开接口。
 
 **TwinBoard（分析层）**  
-TwinBoard 继承自 Board 类，作为辅助分析工具存在。其核心功能是将原始数字转换为互补数表示（每个数字转换为
-`min(digit, 10 - digit)`），从而将配对问题简化为"数值相等即可配对"的形式。这种转换使得配对判断逻辑更加简单，同时预计算所有可能的配对信息（
-`digit_pairs` 和 `potential_num`），为 Solver 提供高效的决策支持。
+TwinBoard 继承自 Board 类，作为辅助分析工具存在。其核心功能是将原始数字转换为互补数表示（每个数字转换为 `min(digit, 10 - digit)`），从而将配对问题简化为"数值相等即可配对"的形式。这种转换使得配对判断逻辑更加简单，同时预计算所有可能的配对信息（`pair_list` 和 `score`），为 Solver 提供高效的决策支持。
 
 **Solver（控制层）**  
 Solver 类实现了游戏的求解算法，是整个项目的智能核心。它接收 Board 实例，转换为 TwinBoard
@@ -524,7 +527,7 @@ Solver 类实现了游戏的求解算法，是整个项目的智能核心。它�
 
 ### 算法详解
 
-求解器采用贪心前瞻算法，其核心思想是在每一步选择对未来最有利的操作。算法的关键在于评估标准的选取——使用 `potential_num`
+求解器采用贪心前瞻算法，其核心思想是在每一步选择对未来最有利的操作。算法的关键在于评估标准的选取——使用 `score`
 作为评估指标，该指标反映了执行某步消除后棋盘剩余的可消除对数量。
 
 **决策过程**如下：
@@ -533,8 +536,8 @@ Solver 类实现了游戏的求解算法，是整个项目的智能核心。它�
 2. 对于每个数字对 `pᵢ`：
     - 创建棋盘副本 `Sᵢ = copy.deepcopy(S)`
     - 在 `Sᵢ` 上执行消除操作 `Sᵢ.match(pᵢ)`
-    - 计算 `Sᵢ.potential_num`（后续可消除对数量）
-3. 选择 `potential_num` 值最大的数字对 `p*` 作为最优选择
+    - 计算 `Sᵢ.score`（后续可消除对数量）
+3. 选择 `score` 值最大的数字对 `p*` 作为最优选择
 4. 在原棋盘上执行消除 `S.match(p*)`
 5. 重复上述过程直到无法继续消除或棋盘清空
 

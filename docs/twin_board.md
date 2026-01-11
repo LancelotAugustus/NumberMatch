@@ -29,19 +29,18 @@
 - **转换规则：** `digit_list[i] = min(original_digit, 10 - original_digit)`（当 original_digit != 0 时）
 - **示例：** 原始数字 `[1, 5, 3, 9, 2, 8, 4, 6, 7]` 转换为 `[1, 5, 3, 1, 2, 2, 4, 4, 3]`
 
-### `digit_pairs`
+### `pair_list`
 
 - **类型：** `list[tuple[int, int]]`
 - **说明：** 存储所有可达配对的位置对列表。每个元素是一个元组，包含两个全局索引，表示这两个位置可以配对消除。
-- **更新时机：** 在 `__init__` 和 `match` 方法中通过 `_update_information()` 自动更新
+- **更新时机：** 在 `__init__` 和 `match` 方法中通过 `_analyze()` 自动更新
 - **示例：** `[(0, 3), (1, 8), (4, 5)]` 表示索引 0 和 3 可配对，索引 1 和 8 可配对，索引 4 和 5 可配对
 
-### `potential_num`
+### `score`
 
 - **类型：** `int`
-- **说明：** 统计所有满足数字匹配条件的配对数量。与 `digit_pairs` 不同，此属性包含所有满足数字匹配（互补数相等）但可能不满足路径可达条件的配对。
-- **更新时机：** 在 `__init__` 和 `match` 方法中通过 `_update_information()` 自动更新（实际在 `_update_information()`
-  内部初始化为 0 后累加）
+- **说明：** 统计所有满足数字匹配条件的配对数量。与 `pair_list` 不同，此属性包含所有满足数字匹配（互补数相等）但可能不满足路径可达条件的配对。
+- **更新时机：** 在 `__init__` 和 `match` 方法中通过 `_analyze()` 自动更新
 
 ## 方法说明
 
@@ -130,20 +129,20 @@ twin_board.set_digits([1, 2, 3, 4, 5, 0, 0, 0, 0])
 
 ---
 
-### `_update_information`
+### `_analyze`
 
 ```python
-def _update_information(self) -> None
+def _analyze(self) -> None
 ```
 
-**功能描述：** 更新配对信息。重新计算 `digit_pairs`（可达配对列表）和 `potential_num`（潜在配对数量）。
+**功能描述：** 更新配对信息。重新计算 `pair_list`（可达配对列表）和 `score`（潜在配对数量）。
 
 **计算逻辑：**
 
-1. 清空 `digit_pairs` 列表和 `potential_num` 计数器
+1. 清空 `pair_list` 列表和 `score` 计数器
 2. 遍历所有位置对 `(i, j)`（其中 `i < j`）：
-    - 如果 `_can_match(i, j)` 为 `True`，则 `potential_num` 增加 1
-    - 如果 `_is_matching(i, j)` 为 `True`，则将 `(i, j)` 添加到 `digit_pairs`
+    - 如果 `_can_match(i, j)` 为 `True`，则 `score` 增加 1
+    - 如果 `_is_pair(i, j)` 为 `True`，则将 `(i, j)` 添加到 `pair_list`
 
 **参数：** 无
 
@@ -196,7 +195,7 @@ print(twin_board._can_match(0, 1))  # False（1 和 5 不等）
 
 ---
 
-### `_is_matching`
+### `_is_pair`
 
 ```python
 def _is_matching(self, global_index1: int, global_index2: int) -> bool
@@ -371,11 +370,11 @@ print(twin_board.pair_list)  # 更新后的可达配对列表
 
 本类中的方法按照访问级别分为以下几类：
 
-| 方法名                                                          | 访问级别 | 说明                      |
-|--------------------------------------------------------------|------|-------------------------|
-| `__init__`, `__str__`                                        | 特殊方法 | Python 特殊方法，用于初始化和字符串表示 |
-| `set_digits`, `match`, `fill`                                | 公开   | 公开接口，供外部代码调用            |
-| `_can_match`, `_is_matching`, `_clear`,`_update_information` | 私有   | 内部实现细节，主要供类内部方法使用       |
+| 方法名                                       | 访问级别 | 说明                      |
+|-------------------------------------------|------|-------------------------|
+| `__init__`, `__str__`                     | 特殊方法 | Python 特殊方法，用于初始化和字符串表示 |
+| `set_digits`, `match`, `fill`             | 公开   | 公开接口，供外部代码调用            |
+| `_can_match`, `_is_pair`, `_clear`,`_analyze` | 私有   | 内部实现细节，主要供类内部方法使用       |
 
 **设计原则：** `TwinBoard` 类通过互补数转换简化配对判断逻辑，同时保持与 `Board` 类一致的接口设计，便于集成到现有游戏架构中。
 
@@ -383,8 +382,10 @@ print(twin_board.pair_list)  # 更新后的可达配对列表
 
 1. **互补数转换的不可逆性：** 一旦数字被转换为互补数形式，就无法直接恢复原始数字。必要时应在操作前保存原始 Board 的状态。
 
-2. **配对信息的自动更新：** `digit_pairs` 和 `potential_num` 在 `__init__` 和 `match()` 后会自动更新，但在直接调用
-   `set_digits()` 后需要手动调用 `_update_information()` 以获取最新的配对信息。
+2. **配对信息的自动更新：** `pair_list` 和 `score` 在 `__init__` 和 `match()` 后会自动更新，但在直接调用
+   `set_digits()` 后需要手动调用 `_analyze()` 以获取最新的配对信息。
 
-3. **fill() 方法对配对信息的影响：** 调用 `fill()` 后，`digit_pairs` 和 `potential_num` 不会自动更新，需要手动调用
-   `_update_information()` 以反映新的棋盘状态。
+3. **fill() 方法对配对信息的影响：** 调用 `fill()` 后，`pair_list` 和 `score` 不会自动更新，需要手动调用
+   `_analyze()` 以反映新的棋盘状态。
+
+4. **score 与 pair_list 的区别：** `score` 包含所有互补数相等的位置对，不要求路径可达；`pair_list` 仅包含可达的配对位置对。
