@@ -104,7 +104,7 @@ class TestSolverSetBoard:
         solver = Solver()
         solver.set_board(board)
 
-        assert len(solver.board.digit_pairs) > 0
+        assert len(solver.board.pair_list) > 0
 
     def test_set_board_empty_board(self):
         """测试设置空棋盘"""
@@ -114,7 +114,7 @@ class TestSolverSetBoard:
         solver.set_board(board)
 
         assert solver.board.digit_list == []
-        assert solver.board.digit_pairs == []
+        assert solver.board.pair_list == []
 
     def test_set_board_multiple_times(self):
         """测试多次设置棋盘"""
@@ -169,9 +169,9 @@ class TestSolverSolveWithDigitPairs:
         solver = Solver()
         solver.set_board(board)
 
-        assert len(solver.board.digit_pairs) > 0
+        assert len(solver.board.pair_list) > 0
 
-        solver.board.match(solver.board.digit_pairs[0][0], solver.board.digit_pairs[0][1])
+        solver.board.match(solver.board.pair_list[0][0], solver.board.pair_list[0][1])
 
         assert 5 not in solver.board.digit_list[:2]
 
@@ -191,12 +191,12 @@ class TestSolverSolveWithDigitPairs:
         solver = Solver()
         solver.set_board(board)
 
-        initial_pairs_count = len(solver.board.digit_pairs)
+        initial_pairs_count = len(solver.board.pair_list)
         assert initial_pairs_count > 0
 
-        solver.board.match(solver.board.digit_pairs[0][0], solver.board.digit_pairs[0][1])
+        solver.board.match(solver.board.pair_list[0][0], solver.board.pair_list[0][1])
 
-        assert len(solver.board.digit_pairs) < initial_pairs_count
+        assert len(solver.board.pair_list) < initial_pairs_count
 
     def test_solver_algorithm_behavior_with_pairs(self):
         """测试求解算法在有配对时的行为"""
@@ -214,10 +214,10 @@ class TestSolverSolveWithDigitPairs:
         solver = Solver()
         solver.set_board(board)
 
-        assert len(solver.board.digit_pairs) > 0
+        assert len(solver.board.pair_list) > 0
 
-        if len(solver.board.digit_pairs) > 0:
-            first_pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            first_pair = solver.board.pair_list[0]
             solver.board.match(first_pair[0], first_pair[1])
 
             assert isinstance(solver.board.digit_list, list)
@@ -234,7 +234,7 @@ class TestSolverSolveFailure:
         solver = Solver()
         solver.set_board(board)
 
-        assert solver.board.digit_pairs == []
+        assert solver.board.pair_list == []
         result = solver.solve()
 
         assert result is False
@@ -247,7 +247,7 @@ class TestSolverSolveFailure:
         solver = Solver()
         solver.set_board(board)
 
-        assert solver.board.digit_pairs == []
+        assert solver.board.pair_list == []
         result = solver.solve()
 
         assert result is False
@@ -271,7 +271,7 @@ class TestSolverSolveFailure:
         solver = Solver()
         solver.set_board(board)
 
-        assert solver.board.digit_pairs == []
+        assert solver.board.pair_list == []
         result = solver.solve()
 
         assert result is False
@@ -317,8 +317,8 @@ class TestSolverGetSolution:
         solver = Solver()
         solver.set_board(board)
 
-        if len(solver.board.digit_pairs) > 0:
-            first_pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            first_pair = solver.board.pair_list[0]
             solver.board.match(first_pair[0], first_pair[1])
             solver.path.append(first_pair)
 
@@ -342,8 +342,8 @@ class TestSolverGetSolution:
         solver = Solver()
         solver.set_board(board)
 
-        if len(solver.board.digit_pairs) > 0:
-            pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            pair = solver.board.pair_list[0]
             solver.board.match(pair[0], pair[1])
             solver.path.append(pair)
 
@@ -391,8 +391,8 @@ class TestSolverPathRecording:
         solver = Solver()
         solver.set_board(board)
 
-        if len(solver.board.digit_pairs) > 0:
-            pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            pair = solver.board.pair_list[0]
             solver.board.match(pair[0], pair[1])
             solver.path.append(pair)
 
@@ -414,8 +414,8 @@ class TestSolverPathRecording:
         solver = Solver()
         solver.set_board(board)
 
-        if len(solver.board.digit_pairs) > 0:
-            first_pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            first_pair = solver.board.pair_list[0]
             solver.board.match(first_pair[0], first_pair[1])
             solver.path.append(first_pair)
 
@@ -436,7 +436,7 @@ class TestSolverEdgeCases:
         solver = Solver()
         solver.set_board(board)
 
-        assert solver.board.digit_pairs == []
+        assert solver.board.pair_list == []
         result = solver.solve()
 
         assert result is False
@@ -457,7 +457,7 @@ class TestSolverEdgeCases:
         solver = Solver()
         solver.set_board(board)
 
-        assert solver.board.digit_pairs == []
+        assert solver.board.pair_list == []
         result = solver.solve()
 
         assert isinstance(result, bool)
@@ -489,15 +489,15 @@ class TestSolverEdgeCases:
         solver = Solver()
 
         solver.set_board(board1)
-        if len(solver.board.digit_pairs) > 0:
-            first_pair1 = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            first_pair1 = solver.board.pair_list[0]
             solver.board.match(first_pair1[0], first_pair1[1])
             solver.path.append(first_pair1)
         path1 = solver.get_solution()
 
         solver.set_board(board2)
-        if len(solver.board.digit_pairs) > 0:
-            first_pair2 = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            first_pair2 = solver.board.pair_list[0]
             solver.board.match(first_pair2[0], first_pair2[1])
             solver.path.append(first_pair2)
         path2 = solver.get_solution()
@@ -524,8 +524,8 @@ class TestSolverEdgeCases:
         solver = Solver()
         solver.set_board(original_board)
 
-        if len(solver.board.digit_pairs) > 0:
-            first_pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            first_pair = solver.board.pair_list[0]
             solver.board.match(first_pair[0], first_pair[1])
 
         assert original_board.digit_list == board_copy.digit_list
@@ -569,8 +569,8 @@ class TestSolverIntegration:
         solver = Solver()
         solver.set_board(board)
 
-        if len(solver.board.digit_pairs) > 0:
-            first_pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            first_pair = solver.board.pair_list[0]
             solver.board.match(first_pair[0], first_pair[1])
 
             assert isinstance(solver.board.digit_list, list)
@@ -591,7 +591,7 @@ class TestSolverIntegration:
         solver = Solver()
         solver.set_board(board)
 
-        initial_potential = solver.board.potential_num
+        initial_potential = solver.board.potential_pair_count
 
         assert initial_potential >= 0
 
@@ -613,8 +613,8 @@ class TestSolverIntegration:
 
         initial_nonzero = len([d for d in solver.board.digit_list if d != 0])
 
-        if len(solver.board.digit_pairs) > 0:
-            pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            pair = solver.board.pair_list[0]
             solver.board.match(pair[0], pair[1])
 
             new_nonzero = len([d for d in solver.board.digit_list if d != 0])
@@ -640,9 +640,9 @@ class TestSolverAlgorithmBehavior:
         solver = Solver()
         solver.set_board(board)
 
-        assert len(solver.board.digit_pairs) > 0
+        assert len(solver.board.pair_list) > 0
 
-        pair = solver.board.digit_pairs[0]
+        pair = solver.board.pair_list[0]
         solver.board.match(pair[0], pair[1])
         solver.path.append(pair)
 
@@ -665,8 +665,8 @@ class TestSolverAlgorithmBehavior:
         solver.set_board(board)
 
         initial_path_len = len(solver.path)
-        while len(solver.board.digit_pairs) > 0:
-            pair = solver.board.digit_pairs[0]
+        while len(solver.board.pair_list) > 0:
+            pair = solver.board.pair_list[0]
             solver.board.match(pair[0], pair[1])
             solver.path.append(pair)
 
@@ -688,9 +688,9 @@ class TestSolverAlgorithmBehavior:
         solver = Solver()
         solver.set_board(board)
 
-        assert len(solver.board.digit_pairs) >= 2
+        assert len(solver.board.pair_list) >= 2
 
-        first_pair = solver.board.digit_pairs[0]
+        first_pair = solver.board.pair_list[0]
         solver.board.match(first_pair[0], first_pair[1])
         solver.path.append(first_pair)
 
@@ -716,8 +716,8 @@ class TestSolverStateConsistency:
         solver = Solver()
         solver.set_board(board)
 
-        if len(solver.board.digit_pairs) > 0:
-            pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            pair = solver.board.pair_list[0]
             solver.board.match(pair[0], pair[1])
 
             assert isinstance(solver.board.digit_list, list)
@@ -740,8 +740,8 @@ class TestSolverStateConsistency:
 
         path_before = solver.get_solution()
 
-        if len(solver.board.digit_pairs) > 0:
-            pair = solver.board.digit_pairs[0]
+        if len(solver.board.pair_list) > 0:
+            pair = solver.board.pair_list[0]
             solver.board.match(pair[0], pair[1])
             solver.path.append(pair)
 
@@ -777,7 +777,7 @@ class TestSolverBugEdgeCases:
         solver = Solver()
         solver.set_board(board)
 
-        if len(solver.board.digit_pairs) > 0 and solver.board.potential_num == 0:
+        if len(solver.board.pair_list) > 0 and solver.board.potential_pair_count == 0:
             with pytest.raises(TypeError, match="'NoneType' object is not subscriptable"):
                 solver.solve()
 
@@ -801,7 +801,7 @@ class TestSolverFullCoverage:
         solver = Solver()
         solver.set_board(board)
 
-        initial_pairs = len(solver.board.digit_pairs)
+        initial_pairs = len(solver.board.pair_list)
         assert initial_pairs > 0, "Test setup failed: no digit pairs found"
 
         result = solver.solve()
@@ -827,9 +827,9 @@ class TestSolverFullCoverage:
         solver = Solver()
         solver.set_board(board)
 
-        assert len(solver.board.digit_pairs) > 0
+        assert len(solver.board.pair_list) > 0
 
-        solver.board.match(solver.board.digit_pairs[0][0], solver.board.digit_pairs[0][1])
+        solver.board.match(solver.board.pair_list[0][0], solver.board.pair_list[0][1])
         assert solver.board.digit_list == []
 
         result = solver.solve()
@@ -867,8 +867,8 @@ class TestSolverFullCoverage:
         solver.set_board(board)
 
         has_pairs_with_zero_potential = (
-                len(solver.board.digit_pairs) > 0 and
-                solver.board.potential_num == 0
+                len(solver.board.pair_list) > 0 and
+                solver.board.potential_pair_count == 0
         )
 
         if has_pairs_with_zero_potential:

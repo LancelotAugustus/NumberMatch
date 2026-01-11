@@ -222,8 +222,8 @@ twin_board = TwinBoard(board)
 # 转换规则：min(digit, 10 - digit)
 
 # 获取分析数据
-print(f"可达配对列表：{twin_board.digit_pairs}")
-print(f"潜在配对数量：{twin_board.potential_num}")
+print(f"可达配对列表：{twin_board.pair_list}")
+print(f"潜在配对数量：{twin_board.potential_pair_count}")
 ```
 
 ### 索引系统

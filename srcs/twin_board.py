@@ -30,15 +30,15 @@ class TwinBoard(Board):
 
     def _update_information(self) -> None:
         """更新信息"""
-        self.digit_pairs = []
-        self.potential_num = 0
+        self.pair_list = []
+        self.potential_pair_count = 0
 
         for i in range(len(self.digit_list)):
             for j in range(i + 1, len(self.digit_list)):
                 if self._can_match(i, j):
-                    self.potential_num += 1
+                    self.potential_pair_count += 1
                 if self._is_matching(i, j):
-                    self.digit_pairs.append((i, j))
+                    self.pair_list.append((i, j))
 
     def match(self, global_index1: int, global_index2: int) -> None:
         """

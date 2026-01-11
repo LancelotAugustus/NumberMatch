@@ -117,8 +117,8 @@ class TestTwinBoardInitialization:
         twin_board = TwinBoard(board)
 
         assert twin_board.digit_list == []
-        assert twin_board.digit_pairs == []
-        assert twin_board.potential_num == 0
+        assert twin_board.pair_list == []
+        assert twin_board.potential_pair_count == 0
 
     def test_str_representation(self):
         """测试字符串表示"""
@@ -356,8 +356,8 @@ class TestTwinBoardUpdateInformation:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board.potential_num > 0
-        assert len(twin_board.digit_pairs) > 0
+        assert twin_board.potential_pair_count > 0
+        assert len(twin_board.pair_list) > 0
 
     def test_digit_pairs_count(self):
         """测试可消除配对计数"""
@@ -374,7 +374,7 @@ class TestTwinBoardUpdateInformation:
 
         twin_board = TwinBoard(board)
 
-        assert twin_board.potential_num >= 2
+        assert twin_board.potential_pair_count >= 2
 
     def test_digit_pairs_content(self):
         """测试可消除配对内容"""
@@ -391,15 +391,15 @@ class TestTwinBoardUpdateInformation:
 
         twin_board = TwinBoard(board)
 
-        assert (0, 8) in twin_board.digit_pairs or (8, 0) in twin_board.digit_pairs
+        assert (0, 8) in twin_board.pair_list or (8, 0) in twin_board.pair_list
 
     def test_empty_board_information(self):
         """测试空棋盘的信息"""
         board = Board()
         twin_board = TwinBoard(board)
 
-        assert twin_board.digit_pairs == []
-        assert twin_board.potential_num == 0
+        assert twin_board.pair_list == []
+        assert twin_board.potential_pair_count == 0
 
     def test_information_updates_after_match(self):
         """测试配对后信息更新"""
@@ -415,13 +415,13 @@ class TestTwinBoardUpdateInformation:
                           0, 0, 0, 0, 0, 0, 0, 0, 0])
 
         twin_board = TwinBoard(board)
-        initial_pairs_count = len(twin_board.digit_pairs)
-        initial_potential = twin_board.potential_num
+        initial_pairs_count = len(twin_board.pair_list)
+        initial_potential = twin_board.potential_pair_count
 
         twin_board.match(0, 8)
 
-        assert len(twin_board.digit_pairs) < initial_pairs_count
-        assert twin_board.potential_num < initial_potential
+        assert len(twin_board.pair_list) < initial_pairs_count
+        assert twin_board.potential_pair_count < initial_potential
 
 
 class TestTwinBoardMatchOperation:

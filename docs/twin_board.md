@@ -155,8 +155,8 @@ def _update_information(self) -> None
 twin_board = TwinBoard(board)
 twin_board.match(0, 8)  # 配对消除后
 twin_board._update_information()  # 手动更新配对信息
-print(twin_board.digit_pairs)  # 查看可达配对列表
-print(twin_board.potential_num)  # 查看潜在配对数量
+print(twin_board.pair_list)  # 查看可达配对列表
+print(twin_board.potential_pair_count)  # 查看潜在配对数量
 ```
 
 ---
@@ -329,7 +329,7 @@ twin_board = TwinBoard(board)
 # 1 和 9 和为 10，转换为互补数后都是 1，可以配对
 twin_board.match(0, 8)
 print(twin_board.digit_list)  # [0, 2, 3, 4, 5, 6, 7, 8, 0]
-print(twin_board.digit_pairs)  # 更新后的可达配对列表
+print(twin_board.pair_list)  # 更新后的可达配对列表
 ```
 
 ---
